@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -36,8 +36,9 @@ public class Animal {
     @Column(name = "animal_color")
     private String color;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "animal_date_of_birth")
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     // Her hayvanın bir sahibi olabilir.
     @ManyToOne

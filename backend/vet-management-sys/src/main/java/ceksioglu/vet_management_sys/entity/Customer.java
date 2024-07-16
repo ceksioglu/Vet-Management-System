@@ -34,6 +34,7 @@ public class Customer {
     @Column(name = "customer_city", nullable = false)
     private String city;
 
+    //Bir müşterinin birden fazla hayvanı olabilir.
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Animal> animals;
 }
