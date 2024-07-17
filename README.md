@@ -109,4 +109,4 @@ Veri tabanı yapısını ve ilişkilerini gösteren sınıf diyagramı aşağıd
 
 ## İletişim
 
-Sorularınız veya geri bildirimleriniz için lütfen iletişime geçin: [ceksioglu@hotmail.com]
+Geri bildirimleriniz için lütfen iletişime geçin: [ceksioglu@hotmail.com]
