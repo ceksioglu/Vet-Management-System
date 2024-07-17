@@ -1,5 +1,6 @@
 package ceksioglu.vet_management_sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,14 +24,13 @@ public class Appointment {
     @Column(name = "appointment_date", nullable = false)
     private Date appointmentDate;
 
-
-    //Bir doktora ait birden fazla randevu olabilir.
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
+    @JsonIgnore
     private Doctor doctor;
 
-    //Bir hayvana ait birden fazla randevu olabilir.
     @ManyToOne
     @JoinColumn(name = "animal_id", nullable = false)
+    @JsonIgnore
     private Animal animal;
 }
