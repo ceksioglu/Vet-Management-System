@@ -1,5 +1,6 @@
 package ceksioglu.vet_management_sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class Customer {
     @Column(name = "customer_city", nullable = false)
     private String city;
 
-    //Bir müşterinin birden fazla hayvanı olabilir.
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Animal> animals;
 }
