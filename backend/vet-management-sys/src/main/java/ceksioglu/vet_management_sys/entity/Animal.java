@@ -1,5 +1,6 @@
 package ceksioglu.vet_management_sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,33 +21,33 @@ public class Animal {
     @Column(name = "animal_id")
     private Long id;
 
-    @Column(name = "animal_name")
+    @Column(name = "animal_name", nullable = false)
     private String name;
 
-    @Column(name = "animal_species")
+    @Column(name = "animal_species", nullable = false)
     private String species;
 
-    @Column(name = "animal_breed")
+    @Column(name = "animal_breed", nullable = false)
     private String breed;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "animal_gender")
+    @Column(name = "animal_gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "animal_color")
+    @Column(name = "animal_color", nullable = false)
     private String color;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "animal_date_of_birth")
+    @Column(name = "animal_date_of_birth", nullable = false)
     private Date dateOfBirth;
 
-    // Her hayvanın bir sahibi olabilir.
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
-    //Bir hayvana birden fazla aşı uygulanabilir.
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Vaccine> vaccines;
 
     public enum Gender {
