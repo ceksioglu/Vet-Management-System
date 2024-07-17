@@ -24,11 +24,13 @@ public class Appointment {
     @Column(name = "appointment_date", nullable = false)
     private Date appointmentDate;
 
+    //Birden fazla randevu bir doktora ait olabilir.
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     @JsonIgnore
     private Doctor doctor;
 
+    //Birden fazla randevu bir hayvana ait olabilir.
     @ManyToOne
     @JoinColumn(name = "animal_id", nullable = false)
     @JsonIgnore
