@@ -3,7 +3,8 @@
 ## Mesut Hocaya Not:
 Postman ile sürünmeyin diye projeye OpenAPI dökümantasyonunu entegre ettim. Buradan ulaşabilirsiniz:
 (http://localhost:8081/swagger-ui/index.html#/)
-Bu not kendini proje değerlendirildikten sonra imha edecektir.
+Projeye daha sonra front end entegrasyonu yapacağım, ama bitmediği için bakmanızın bir anlamı yok.
+Bu not kendini proje değerlendirildikten sonra imha edecektir, kolay gelsin.
 
 ## Proje Açıklaması
 
