@@ -24,6 +24,7 @@ public class AvailableDate {
     @Column(name = "available_date", nullable = false)
     private Date availableDate;
 
+    //Bir doktorun birden fazla müsait zamanı olabilir.
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     @JsonIgnore
