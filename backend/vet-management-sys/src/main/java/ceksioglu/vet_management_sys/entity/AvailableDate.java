@@ -1,5 +1,6 @@
 package ceksioglu.vet_management_sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,8 +24,8 @@ public class AvailableDate {
     @Column(name = "available_date", nullable = false)
     private Date availableDate;
 
-    //Birden fazla boş tarih bir doktora ait olabilir.
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
+    @JsonIgnore
     private Doctor doctor;
 }
