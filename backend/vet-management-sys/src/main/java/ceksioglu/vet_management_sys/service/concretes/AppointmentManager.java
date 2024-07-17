@@ -4,6 +4,7 @@ import ceksioglu.vet_management_sys.entity.Appointment;
 import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
 import ceksioglu.vet_management_sys.core.exception.AppointmentConflictException;
 import ceksioglu.vet_management_sys.repository.AppointmentRepository;
+import ceksioglu.vet_management_sys.repository.AvailableDateRepository;
 import ceksioglu.vet_management_sys.service.abstracts.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,12 @@ import java.util.List;
 public class AppointmentManager implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final AvailableDateRepository availableDateRepository;
 
     @Autowired
-    public AppointmentManager(AppointmentRepository appointmentRepository) {
+    public AppointmentManager(AppointmentRepository appointmentRepository, AvailableDateRepository availableDateRepository) {
         this.appointmentRepository = appointmentRepository;
+        this.availableDateRepository = availableDateRepository;
     }
 
     /**
@@ -44,7 +47,8 @@ public class AppointmentManager implements AppointmentService {
      */
     @Override
     public Appointment getAppointmentById(Long id) {
-        return appointmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
     }
 
     /**
@@ -52,13 +56,20 @@ public class AppointmentManager implements AppointmentService {
      *
      * @param appointment Oluşturulacak randevu nesnesi
      * @return Oluşturulan randevu nesnesi
-     * @throws AppointmentConflictException Doktorun aynı saatte başka bir randevusu olduğunda fırlatılır
+     * @throws AppointmentConflictException Doktorun aynı saatte başka bir randevusu olduğunda veya doktorun o tarihte çalışmadığında fırlatılır
      */
     @Override
     public Appointment createAppointment(Appointment appointment) {
-        if (appointmentRepository.existsByDoctorIdAndAppointmentDate(appointment.getDoctor().getId(), appointment.getAppointmentDate())) {
-            throw new AppointmentConflictException("Doctor already has an appointment at this time.");
+        // Doktorun belirtilen tarihte çalışıp çalışmadığını kontrol et
+        if (!availableDateRepository.existsByDoctorIdAndAvailableDate(appointment.getDoctor().getId(), appointment.getAppointmentDate())) {
+            throw new AppointmentConflictException("Doktor bu tarihte çalışmamaktadır!");
         }
+
+        // Doktorun belirtilen tarih ve saatte başka bir randevusu olup olmadığını kontrol et
+        if (appointmentRepository.existsByDoctorIdAndAppointmentDate(appointment.getDoctor().getId(), appointment.getAppointmentDate())) {
+            throw new AppointmentConflictException("Girilen saatte başka bir randevu mevcuttur.");
+        }
+
         return appointmentRepository.save(appointment);
     }
 
@@ -69,14 +80,21 @@ public class AppointmentManager implements AppointmentService {
      * @param updatedAppointment Güncellenmiş randevu nesnesi
      * @return Güncellenmiş randevu nesnesi
      * @throws ResourceNotFoundException Belirtilen ID'ye sahip randevu bulunamadığında fırlatılır
-     * @throws AppointmentConflictException Doktorun aynı saatte başka bir randevusu olduğunda fırlatılır
+     * @throws AppointmentConflictException Doktorun aynı saatte başka bir randevusu olduğunda veya doktorun o tarihte çalışmadığında fırlatılır
      */
     @Override
     public Appointment updateAppointment(Long id, Appointment updatedAppointment) {
         return appointmentRepository.findById(id).map(appointment -> {
-            if (appointmentRepository.existsByDoctorIdAndAppointmentDate(updatedAppointment.getDoctor().getId(), updatedAppointment.getAppointmentDate())) {
-                throw new AppointmentConflictException("Doctor already has an appointment at this time.");
+            // Doktorun belirtilen tarihte çalışıp çalışmadığını kontrol et
+            if (!availableDateRepository.existsByDoctorIdAndAvailableDate(updatedAppointment.getDoctor().getId(), updatedAppointment.getAppointmentDate())) {
+                throw new AppointmentConflictException("Doktor bu tarihte çalışmamaktadır!");
             }
+
+            // Doktorun belirtilen tarih ve saatte başka bir randevusu olup olmadığını kontrol et
+            if (appointmentRepository.existsByDoctorIdAndAppointmentDate(updatedAppointment.getDoctor().getId(), updatedAppointment.getAppointmentDate())) {
+                throw new AppointmentConflictException("Girilen saatte başka bir randevu mevcuttur.");
+            }
+
             appointment.setAppointmentDate(updatedAppointment.getAppointmentDate());
             appointment.setDoctor(updatedAppointment.getDoctor());
             appointment.setAnimal(updatedAppointment.getAnimal());
