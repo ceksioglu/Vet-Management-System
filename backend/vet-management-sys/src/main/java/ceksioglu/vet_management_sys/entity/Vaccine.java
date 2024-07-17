@@ -1,5 +1,6 @@
 package ceksioglu.vet_management_sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,5 +36,6 @@ public class Vaccine {
 
     @ManyToOne
     @JoinColumn(name = "animal_id", nullable = false)
+    @JsonIgnore
     private Animal animal;
 }
