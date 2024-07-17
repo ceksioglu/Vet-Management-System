@@ -1,5 +1,10 @@
 # Veteriner Yönetim Sistemi
 
+## Mesut Hocaya Not:
+Postman ile sürünmeyin diye projeye OpenAPI dökümantasyonunu entegre ettim. Buradan ulaşabilirsiniz:
+(http://localhost:8081/swagger-ui/index.html#/)
+Bu not kendini proje değerlendirildikten sonra imha edecektir.
+
 ## Proje Açıklaması
 
 Veteriner Yönetim Sistemi, bir veteriner kliniğinin işlerini yönetmesine olanak tanıyan bir API'dir. Bu sistem sayesinde veteriner çalışanları, doktorları, müşterileri, hayvanları ve randevuları yönetebilir. Proje, Java Spring Boot kullanılarak geliştirilmiştir ve PostgreSQL veya MySQL veri tabanlarını kullanmaktadır.
