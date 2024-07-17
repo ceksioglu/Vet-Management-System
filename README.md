@@ -107,14 +107,6 @@ Veri tabanı yapısını ve ilişkilerini gösteren sınıf diyagramı aşağıd
 
 ![Class Diagram](https://github.com/user-attachments/assets/ae30ad0f-60de-42a7-a3c3-bd27cfb82f4a)
 
-## Katkıda Bulunma
-
-Katkıda bulunmak isterseniz, lütfen bir pull request gönderin veya bir sorun (issue) açın.
-
-## Lisans
-
-Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına bakınız.
-
 ## İletişim
 
-Sorularınız veya geri bildirimleriniz için lütfen iletişime geçin: [your-email@example.com]
+Sorularınız veya geri bildirimleriniz için lütfen iletişime geçin: [ceksioglu@hotmail.com]
