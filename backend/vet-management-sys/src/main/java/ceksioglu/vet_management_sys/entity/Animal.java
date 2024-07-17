@@ -41,11 +41,13 @@ public class Animal {
     @Column(name = "animal_date_of_birth", nullable = false)
     private Date dateOfBirth;
 
+    //Bir müşterinin birden fazla hayvanı olabilir.
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonIgnore
     private Customer customer;
 
+    //Bir hayvanın birden fazla aşısı olabilir.
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Vaccine> vaccines;
