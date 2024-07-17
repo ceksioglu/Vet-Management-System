@@ -1,5 +1,6 @@
 package ceksioglu.vet_management_sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,11 +35,11 @@ public class Doctor {
     @Column(name = "doctor_city", nullable = false)
     private String city;
 
-    //Bir doktorun birden fazla müsait olduğu tarih mevcut olabilir.
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<AvailableDate> availableDates;
 
-    //Bir doktorun birden fazla randevusu olabilir.
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Appointment> appointments;
 }
