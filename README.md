@@ -8,7 +8,7 @@ Bu not kendini proje değerlendirildikten sonra imha edecektir, kolay gelsin.
 
 ## Proje Açıklaması
 
-Veteriner Yönetim Sistemi, bir veteriner kliniğinin işlerini yönetmesine olanak tanıyan bir API'dir. Bu sistem sayesinde veteriner çalışanları, doktorları, müşterileri, hayvanları ve randevuları yönetebilir. Proje, Java Spring Boot kullanılarak geliştirilmiştir ve PostgreSQL veya MySQL veri tabanlarını kullanmaktadır.
+Veteriner Yönetim Sistemi, bir veteriner kliniğinin işlerini yönetmesine olanak tanıyan bir API'dir. Bu sistem sayesinde veteriner çalışanları, doktorları, müşterileri, hayvanları ve randevuları yönetebilir. Proje, Java Spring Boot kullanılarak geliştirilmiştir ve PostgreSQL veya MySQL veri tabanlarını kullanabilir.
 
 ## Özellikler
 
