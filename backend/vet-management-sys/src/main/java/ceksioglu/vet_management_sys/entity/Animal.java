@@ -52,6 +52,10 @@ public class Animal {
     @JsonIgnore
     private List<Vaccine> vaccines;
 
+    public Animal(Long animalId) {
+        this.id = animalId;
+    }
+
     public enum Gender {
         MALE,
         FEMALE
