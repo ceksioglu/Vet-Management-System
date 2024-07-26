@@ -10,6 +10,7 @@ Randevular saat ile kaydedilmek yerine sıra ile kaydediliyor (proje geliştirir
 Tarih formatı: 2023-07-15 (YIL / AY / GÜN) şeklindedir.
 
 Projeye daha sonra front end entegrasyonu yapacağım, ama bitmediği için bakmanızın bir anlamı yok.
+
 Bu not kendini proje değerlendirildikten sonra kendini imha edecektir, saygılarımla.
 
 # Veterinary Management System
