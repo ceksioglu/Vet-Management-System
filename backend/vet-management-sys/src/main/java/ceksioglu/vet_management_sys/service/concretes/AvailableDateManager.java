@@ -1,88 +1,102 @@
 package ceksioglu.vet_management_sys.service.concretes;
 
+import ceksioglu.vet_management_sys.dto.AvailableDateDTO;
 import ceksioglu.vet_management_sys.entity.AvailableDate;
-import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
+import ceksioglu.vet_management_sys.entity.Doctor;
 import ceksioglu.vet_management_sys.repository.AvailableDateRepository;
+import ceksioglu.vet_management_sys.repository.DoctorRepository;
 import ceksioglu.vet_management_sys.service.abstracts.AvailableDateService;
+import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
+import ceksioglu.vet_management_sys.core.exception.ResourceAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * AvailableDateManager, AvailableDateService arayüzünü implement eden sınıftır.
- * Doktorların müsait günleriyle ilgili iş mantığını içerir.
- */
 @Service
 public class AvailableDateManager implements AvailableDateService {
 
     private final AvailableDateRepository availableDateRepository;
+    private final DoctorRepository doctorRepository;
 
     @Autowired
-    public AvailableDateManager(AvailableDateRepository availableDateRepository) {
+    public AvailableDateManager(AvailableDateRepository availableDateRepository, DoctorRepository doctorRepository) {
         this.availableDateRepository = availableDateRepository;
+        this.doctorRepository = doctorRepository;
     }
 
-    /**
-     * Tüm müsait günleri getirir.
-     *
-     * @return Tüm müsait günlerin listesi
-     */
     @Override
-    public List<AvailableDate> getAllAvailableDates() {
-        return availableDateRepository.findAll();
+    public AvailableDateDTO saveAvailableDate(AvailableDateDTO availableDateDTO) {
+        Doctor doctor = doctorRepository.findById(availableDateDTO.getDoctorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + availableDateDTO.getDoctorId()));
+
+        if (availableDateRepository.existsByDoctorIdAndAvailableDate(doctor.getId(), availableDateDTO.getAvailableDate())) {
+            throw new ResourceAlreadyExistsException("This date is already available for the doctor");
+        }
+
+        AvailableDate availableDate = new AvailableDate();
+        availableDate.setAvailableDate(availableDateDTO.getAvailableDate());
+        availableDate.setDoctor(doctor);
+
+        AvailableDate savedAvailableDate = availableDateRepository.save(availableDate);
+        return convertToDTO(savedAvailableDate);
     }
 
-    /**
-     * Belirli bir ID'ye sahip müsait günü getirir.
-     *
-     * @param id Müsait günün ID'si
-     * @return Müsait gün nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip müsait gün bulunamadığında fırlatılır
-     */
     @Override
-    public AvailableDate getAvailableDateById(Long id) {
-        return availableDateRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Uyan tarih bulunamadı. " + id));
+    public AvailableDateDTO updateAvailableDate(Long id, AvailableDateDTO availableDateDTO) {
+        AvailableDate availableDate = availableDateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Available date not found with id: " + id));
+
+        Doctor doctor = doctorRepository.findById(availableDateDTO.getDoctorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + availableDateDTO.getDoctorId()));
+
+        if (!availableDate.getDoctor().getId().equals(doctor.getId()) &&
+                availableDateRepository.existsByDoctorIdAndAvailableDate(doctor.getId(), availableDateDTO.getAvailableDate())) {
+            throw new ResourceAlreadyExistsException("This date is already available for the doctor");
+        }
+
+        availableDate.setAvailableDate(availableDateDTO.getAvailableDate());
+        availableDate.setDoctor(doctor);
+
+        AvailableDate updatedAvailableDate = availableDateRepository.save(availableDate);
+        return convertToDTO(updatedAvailableDate);
     }
 
-    /**
-     * Yeni bir müsait gün oluşturur.
-     *
-     * @param availableDate Oluşturulacak müsait gün nesnesi
-     * @return Oluşturulan müsait gün nesnesi
-     */
-    @Override
-    public AvailableDate createAvailableDate(AvailableDate availableDate) {
-        return availableDateRepository.save(availableDate);
-    }
-
-    /**
-     * Belirli bir ID'ye sahip müsait günü günceller.
-     *
-     * @param id Güncellenecek müsait günün ID'si
-     * @param updatedAvailableDate Güncellenmiş müsait gün nesnesi
-     * @return Güncellenmiş müsait gün nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip müsait gün bulunamadığında fırlatılır
-     */
-    @Override
-    public AvailableDate updateAvailableDate(Long id, AvailableDate updatedAvailableDate) {
-        return availableDateRepository.findById(id).map(availableDate -> {
-            availableDate.setAvailableDate(updatedAvailableDate.getAvailableDate());
-            return availableDateRepository.save(availableDate);
-        }).orElseThrow(() -> new ResourceNotFoundException("Uyan tarih bulunamadı. " + id));
-    }
-
-    /**
-     * Belirli bir ID'ye sahip müsait günü siler.
-     *
-     * @param id Silinecek müsait günün ID'si
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip müsait gün bulunamadığında fırlatılır
-     */
     @Override
     public void deleteAvailableDate(Long id) {
         if (!availableDateRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Uyan tarih bulunamadı. " + id);
+            throw new ResourceNotFoundException("Available date not found with id: " + id);
         }
         availableDateRepository.deleteById(id);
+    }
+
+    @Override
+    public AvailableDateDTO getAvailableDateById(Long id) {
+        AvailableDate availableDate = availableDateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Available date not found with id: " + id));
+        return convertToDTO(availableDate);
+    }
+
+    @Override
+    public List<AvailableDateDTO> getAllAvailableDates() {
+        return availableDateRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AvailableDateDTO> getAvailableDatesByDoctorId(Long doctorId) {
+        return availableDateRepository.findByDoctorId(doctorId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private AvailableDateDTO convertToDTO(AvailableDate availableDate) {
+        AvailableDateDTO dto = new AvailableDateDTO();
+        dto.setId(availableDate.getId());
+        dto.setAvailableDate(availableDate.getAvailableDate());
+        dto.setDoctorId(availableDate.getDoctor().getId());
+        return dto;
     }
 }

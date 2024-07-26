@@ -1,17 +1,15 @@
 package ceksioglu.vet_management_sys.service.abstracts;
 
-import ceksioglu.vet_management_sys.entity.Appointment;
-
+import ceksioglu.vet_management_sys.dto.AppointmentDTO;
 import java.util.Date;
 import java.util.List;
 
 public interface AppointmentService {
-    List<Appointment> getAllAppointments();
-    Appointment getAppointmentById(Long id);
-    Appointment createAppointment(Appointment appointment);
-    Appointment updateAppointment(Long id, Appointment appointment);
+    AppointmentDTO saveAppointment(AppointmentDTO appointmentDTO);
+    AppointmentDTO updateAppointment(Long id, AppointmentDTO appointmentDTO);
     void deleteAppointment(Long id);
-
-    List<Appointment> getAppointmentsByDoctorAndDateRange(Long doctorId, Date startDate, Date endDate);
-    List<Appointment> getAppointmentsByAnimalAndDateRange(Long animalId, Date startDate, Date endDate);
+    AppointmentDTO getAppointmentById(Long id);
+    List<AppointmentDTO> getAllAppointments();
+    List<AppointmentDTO> getAppointmentsByDateRangeAndAnimal(Date startDate, Date endDate, Long animalId);
+    List<AppointmentDTO> getAppointmentsByDateRangeAndDoctor(Date startDate, Date endDate, Long doctorId);
 }

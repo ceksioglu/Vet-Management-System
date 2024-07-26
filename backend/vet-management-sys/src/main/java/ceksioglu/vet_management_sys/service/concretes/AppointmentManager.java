@@ -1,113 +1,82 @@
 package ceksioglu.vet_management_sys.service.concretes;
 
+import ceksioglu.vet_management_sys.dto.AppointmentDTO;
 import ceksioglu.vet_management_sys.entity.Appointment;
+import ceksioglu.vet_management_sys.entity.Animal;
+import ceksioglu.vet_management_sys.entity.Doctor;
+import ceksioglu.vet_management_sys.repository.AppointmentRepository;
+import ceksioglu.vet_management_sys.repository.AnimalRepository;
+import ceksioglu.vet_management_sys.repository.DoctorRepository;
+import ceksioglu.vet_management_sys.service.abstracts.AppointmentService;
 import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
 import ceksioglu.vet_management_sys.core.exception.AppointmentConflictException;
-import ceksioglu.vet_management_sys.repository.AppointmentRepository;
-import ceksioglu.vet_management_sys.repository.AvailableDateRepository;
-import ceksioglu.vet_management_sys.service.abstracts.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * AppointmentManager, AppointmentService arayüzünü implement eden sınıftır.
- * Randevularla ilgili iş mantığını içerir.
- */
 @Service
 public class AppointmentManager implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final AvailableDateRepository availableDateRepository;
+    private final AnimalRepository animalRepository;
+    private final DoctorRepository doctorRepository;
 
     @Autowired
-    public AppointmentManager(AppointmentRepository appointmentRepository, AvailableDateRepository availableDateRepository) {
+    public AppointmentManager(AppointmentRepository appointmentRepository,
+                              AnimalRepository animalRepository,
+                              DoctorRepository doctorRepository) {
         this.appointmentRepository = appointmentRepository;
-        this.availableDateRepository = availableDateRepository;
+        this.animalRepository = animalRepository;
+        this.doctorRepository = doctorRepository;
     }
 
-    /**
-     * Tüm randevuları getirir.
-     *
-     * @return Tüm randevuların listesi
-     */
     @Override
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public AppointmentDTO saveAppointment(AppointmentDTO appointmentDTO) {
+        Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + appointmentDTO.getDoctorId()));
+
+        Animal animal = animalRepository.findById(appointmentDTO.getAnimalId())
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found with id: " + appointmentDTO.getAnimalId()));
+
+        if (isAppointmentConflict(appointmentDTO)) {
+            throw new AppointmentConflictException("Appointment conflicts with an existing appointment");
+        }
+
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
+        appointment.setDoctor(doctor);
+        appointment.setAnimal(animal);
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        return convertToDTO(savedAppointment);
     }
 
-    /**
-     * Belirli bir ID'ye sahip randevuyu getirir.
-     *
-     * @param id Randevunun ID'si
-     * @return Randevu nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip randevu bulunamadığında fırlatılır
-     */
     @Override
-    public Appointment getAppointmentById(Long id) {
-        return appointmentRepository.findById(id)
+    public AppointmentDTO updateAppointment(Long id, AppointmentDTO appointmentDTO) {
+        Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
-    }
 
-    /**
-     * Yeni bir randevu oluşturur.
-     *
-     * @param appointment Oluşturulacak randevu nesnesi
-     * @return Oluşturulan randevu nesnesi
-     * @throws AppointmentConflictException Doktorun aynı saatte başka bir randevusu olduğunda veya doktorun o tarihte çalışmadığında fırlatılır
-     */
-    @Override
-    public Appointment createAppointment(Appointment appointment) {
-        // Doktorun belirtilen tarihte çalışıp çalışmadığını kontrol et
-        if (!availableDateRepository.existsByDoctorIdAndAvailableDate(appointment.getDoctor().getId(), appointment.getAppointmentDate())) {
-            throw new AppointmentConflictException("Doktor bu tarihte çalışmamaktadır!");
+        Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + appointmentDTO.getDoctorId()));
+
+        Animal animal = animalRepository.findById(appointmentDTO.getAnimalId())
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found with id: " + appointmentDTO.getAnimalId()));
+
+        if (isAppointmentConflict(appointmentDTO) && !appointment.getId().equals(id)) {
+            throw new AppointmentConflictException("Appointment conflicts with an existing appointment");
         }
 
-        // Doktorun belirtilen tarih ve saatte başka bir randevusu olup olmadığını kontrol et
-        if (appointmentRepository.existsByDoctorIdAndAppointmentDate(appointment.getDoctor().getId(), appointment.getAppointmentDate())) {
-            throw new AppointmentConflictException("Girilen saatte başka bir randevu mevcuttur.");
-        }
+        appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
+        appointment.setDoctor(doctor);
+        appointment.setAnimal(animal);
 
-        return appointmentRepository.save(appointment);
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+        return convertToDTO(updatedAppointment);
     }
 
-    /**
-     * Belirli bir ID'ye sahip randevuyu günceller.
-     *
-     * @param id Güncellenecek randevunun ID'si
-     * @param updatedAppointment Güncellenmiş randevu nesnesi
-     * @return Güncellenmiş randevu nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip randevu bulunamadığında fırlatılır
-     * @throws AppointmentConflictException Doktorun aynı saatte başka bir randevusu olduğunda veya doktorun o tarihte çalışmadığında fırlatılır
-     */
-    @Override
-    public Appointment updateAppointment(Long id, Appointment updatedAppointment) {
-        return appointmentRepository.findById(id).map(appointment -> {
-            // Doktorun belirtilen tarihte çalışıp çalışmadığını kontrol et
-            if (!availableDateRepository.existsByDoctorIdAndAvailableDate(updatedAppointment.getDoctor().getId(), updatedAppointment.getAppointmentDate())) {
-                throw new AppointmentConflictException("Doktor bu tarihte çalışmamaktadır!");
-            }
-
-            // Doktorun belirtilen tarih ve saatte başka bir randevusu olup olmadığını kontrol et
-            if (appointmentRepository.existsByDoctorIdAndAppointmentDate(updatedAppointment.getDoctor().getId(), updatedAppointment.getAppointmentDate())) {
-                throw new AppointmentConflictException("Girilen saatte başka bir randevu mevcuttur.");
-            }
-
-            appointment.setAppointmentDate(updatedAppointment.getAppointmentDate());
-            appointment.setDoctor(updatedAppointment.getDoctor());
-            appointment.setAnimal(updatedAppointment.getAnimal());
-            return appointmentRepository.save(appointment);
-        }).orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
-    }
-
-    /**
-     * Belirli bir ID'ye sahip randevuyu siler.
-     *
-     * @param id Silinecek randevunun ID'si
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip randevu bulunamadığında fırlatılır
-     */
     @Override
     public void deleteAppointment(Long id) {
         if (!appointmentRepository.existsById(id)) {
@@ -116,29 +85,46 @@ public class AppointmentManager implements AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
-    /**
-     * Belirli bir doktor ve tarih aralığı için randevuları getirir.
-     *
-     * @param doctorId Doktorun ID'si
-     * @param startDate Başlangıç tarihi
-     * @param endDate Bitiş tarihi
-     * @return Belirli bir tarih aralığında ve doktora ait randevuların listesi
-     */
     @Override
-    public List<Appointment> getAppointmentsByDoctorAndDateRange(Long doctorId, Date startDate, Date endDate) {
-        return appointmentRepository.findByDoctorIdAndAppointmentDateBetween(doctorId, startDate, endDate);
+    public AppointmentDTO getAppointmentById(Long id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
+        return convertToDTO(appointment);
     }
 
-    /**
-     * Belirli bir hayvan ve tarih aralığı için randevuları getirir.
-     *
-     * @param animalId Hayvanın ID'si
-     * @param startDate Başlangıç tarihi
-     * @param endDate Bitiş tarihi
-     * @return Belirli bir tarih aralığında ve hayvana ait randevuların listesi
-     */
     @Override
-    public List<Appointment> getAppointmentsByAnimalAndDateRange(Long animalId, Date startDate, Date endDate) {
-        return appointmentRepository.findByAnimalIdAndAppointmentDateBetween(animalId, startDate, endDate);
+    public List<AppointmentDTO> getAllAppointments() {
+        return appointmentRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentDTO> getAppointmentsByDateRangeAndAnimal(Date startDate, Date endDate, Long animalId) {
+        return appointmentRepository.findByAppointmentDateBetweenAndAnimalId(startDate, endDate, animalId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentDTO> getAppointmentsByDateRangeAndDoctor(Date startDate, Date endDate, Long doctorId) {
+        return appointmentRepository.findByAppointmentDateBetweenAndDoctorId(startDate, endDate, doctorId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isAppointmentConflict(AppointmentDTO appointmentDTO) {
+        List<Appointment> conflictingAppointments = appointmentRepository.findByDoctorIdAndAppointmentDate(
+                appointmentDTO.getDoctorId(), appointmentDTO.getAppointmentDate());
+        return !conflictingAppointments.isEmpty();
+    }
+
+    private AppointmentDTO convertToDTO(Appointment appointment) {
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setId(appointment.getId());
+        dto.setAppointmentDate(appointment.getAppointmentDate());
+        dto.setDoctorId(appointment.getDoctor().getId());
+        dto.setAnimalId(appointment.getAnimal().getId());
+        return dto;
     }
 }

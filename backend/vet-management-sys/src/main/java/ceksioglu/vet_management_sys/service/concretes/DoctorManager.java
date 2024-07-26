@@ -1,18 +1,17 @@
 package ceksioglu.vet_management_sys.service.concretes;
 
+import ceksioglu.vet_management_sys.dto.DoctorDTO;
 import ceksioglu.vet_management_sys.entity.Doctor;
-import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
 import ceksioglu.vet_management_sys.repository.DoctorRepository;
 import ceksioglu.vet_management_sys.service.abstracts.DoctorService;
+import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
+import ceksioglu.vet_management_sys.core.exception.ResourceAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * DoctorManager, DoctorService arayüzünü implement eden sınıftır.
- * Doktorlarla ilgili iş mantığını içerir.
- */
 @Service
 public class DoctorManager implements DoctorService {
 
@@ -23,70 +22,76 @@ public class DoctorManager implements DoctorService {
         this.doctorRepository = doctorRepository;
     }
 
-    /**
-     * Tüm doktorları getirir.
-     *
-     * @return Tüm doktorların listesi
-     */
     @Override
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
+    public DoctorDTO saveDoctor(DoctorDTO doctorDTO) {
+        if (doctorRepository.existsByMail(doctorDTO.getMail())) {
+            throw new ResourceAlreadyExistsException("Doctor with this email already exists");
+        }
+        Doctor doctor = convertToEntity(doctorDTO);
+        Doctor savedDoctor = doctorRepository.save(doctor);
+        return convertToDTO(savedDoctor);
     }
 
-    /**
-     * Belirli bir ID'ye sahip doktoru getirir.
-     *
-     * @param id Doktorun ID'si
-     * @return Doktor nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip doktor bulunamadığında fırlatılır
-     */
     @Override
-    public Doctor getDoctorById(Long id) {
-        return doctorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Bu ID'ye ait doktor bulunamadı: " + id));
+    public DoctorDTO updateDoctor(Long id, DoctorDTO doctorDTO) {
+        Doctor existingDoctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
+
+        if (!existingDoctor.getMail().equals(doctorDTO.getMail()) &&
+                doctorRepository.existsByMail(doctorDTO.getMail())) {
+            throw new ResourceAlreadyExistsException("Doctor with this email already exists");
+        }
+
+        existingDoctor.setName(doctorDTO.getName());
+        existingDoctor.setPhone(doctorDTO.getPhone());
+        existingDoctor.setMail(doctorDTO.getMail());
+        existingDoctor.setAddress(doctorDTO.getAddress());
+        existingDoctor.setCity(doctorDTO.getCity());
+
+        Doctor updatedDoctor = doctorRepository.save(existingDoctor);
+        return convertToDTO(updatedDoctor);
     }
 
-    /**
-     * Yeni bir doktor oluşturur.
-     *
-     * @param doctor Oluşturulacak doktor nesnesi
-     * @return Oluşturulan doktor nesnesi
-     */
-    @Override
-    public Doctor createDoctor(Doctor doctor) {
-        return doctorRepository.save(doctor);
-    }
-
-    /**
-     * Belirli bir ID'ye sahip doktoru günceller.
-     *
-     * @param id Güncellenecek doktorun ID'si
-     * @param updatedDoctor Güncellenmiş doktor nesnesi
-     * @return Güncellenmiş doktor nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip doktor bulunamadığında fırlatılır
-     */
-    @Override
-    public Doctor updateDoctor(Long id, Doctor updatedDoctor) {
-        return doctorRepository.findById(id).map(doctor -> {
-            doctor.setName(updatedDoctor.getName());
-            doctor.setPhone(updatedDoctor.getPhone());
-            doctor.setMail(updatedDoctor.getMail());
-            doctor.setAddress(updatedDoctor.getAddress());
-            doctor.setCity(updatedDoctor.getCity());
-            return doctorRepository.save(doctor);
-        }).orElseThrow(() -> new ResourceNotFoundException("Bu ID'ye ait doktor bulunamadı: " + id));
-    }
-
-    /**
-     * Belirli bir ID'ye sahip doktoru siler.
-     *
-     * @param id Silinecek doktorun ID'si
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip doktor bulunamadığında fırlatılır
-     */
     @Override
     public void deleteDoctor(Long id) {
         if (!doctorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Bu ID'ye ait doktor bulunamadı: " + id);
+            throw new ResourceNotFoundException("Doctor not found with id: " + id);
         }
         doctorRepository.deleteById(id);
+    }
+
+    @Override
+    public DoctorDTO getDoctorById(Long id) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
+        return convertToDTO(doctor);
+    }
+
+    @Override
+    public List<DoctorDTO> getAllDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private DoctorDTO convertToDTO(Doctor doctor) {
+        DoctorDTO dto = new DoctorDTO();
+        dto.setId(doctor.getId());
+        dto.setName(doctor.getName());
+        dto.setPhone(doctor.getPhone());
+        dto.setMail(doctor.getMail());
+        dto.setAddress(doctor.getAddress());
+        dto.setCity(doctor.getCity());
+        return dto;
+    }
+
+    private Doctor convertToEntity(DoctorDTO dto) {
+        Doctor doctor = new Doctor();
+        doctor.setName(dto.getName());
+        doctor.setPhone(dto.getPhone());
+        doctor.setMail(dto.getMail());
+        doctor.setAddress(dto.getAddress());
+        doctor.setCity(dto.getCity());
+        return doctor;
     }
 }
