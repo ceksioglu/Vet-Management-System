@@ -12,4 +12,5 @@ public interface AppointmentService {
     List<AppointmentDTO> getAllAppointments();
     List<AppointmentDTO> getAppointmentsByDateRangeAndAnimal(Date startDate, Date endDate, Long animalId);
     List<AppointmentDTO> getAppointmentsByDateRangeAndDoctor(Date startDate, Date endDate, Long doctorId);
+    Integer getAppointmentOrder(Date appointmentDate, Long doctorId);
 }

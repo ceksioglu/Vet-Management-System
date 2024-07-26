@@ -32,14 +32,23 @@ public class VaccineManager implements VaccineService {
         Animal animal = animalRepository.findById(vaccineDTO.getAnimalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Animal not found with id: " + vaccineDTO.getAnimalId()));
 
-        if (isVaccineActive(animal.getId(), vaccineDTO.getName(), vaccineDTO.getCode())) {
-            throw new ResourceAlreadyExistsException("This vaccine is already active for the animal");
+        Date currentDate = new Date();
+        if (vaccineDTO.getProtectionFinishDate().before(currentDate)) {
+            // Koruyuculuk süresi bitmiş, doğrudan kaydet
+            Vaccine vaccine = convertToEntity(vaccineDTO);
+            vaccine.setAnimal(animal);
+            Vaccine savedVaccine = vaccineRepository.save(vaccine);
+            return convertToDTO(savedVaccine);
+        } else {
+            // Koruyuculuk süresi bitmemiş, aktif aşı kontrolü yap
+            if (isVaccineActive(animal.getId(), vaccineDTO.getName(), vaccineDTO.getCode())) {
+                throw new ResourceAlreadyExistsException("This vaccine is already active for the animal");
+            }
+            Vaccine vaccine = convertToEntity(vaccineDTO);
+            vaccine.setAnimal(animal);
+            Vaccine savedVaccine = vaccineRepository.save(vaccine);
+            return convertToDTO(savedVaccine);
         }
-
-        Vaccine vaccine = convertToEntity(vaccineDTO);
-        vaccine.setAnimal(animal);
-        Vaccine savedVaccine = vaccineRepository.save(vaccine);
-        return convertToDTO(savedVaccine);
     }
 
     @Override

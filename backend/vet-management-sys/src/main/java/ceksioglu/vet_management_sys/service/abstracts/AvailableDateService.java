@@ -1,6 +1,8 @@
 package ceksioglu.vet_management_sys.service.abstracts;
 
 import ceksioglu.vet_management_sys.dto.AvailableDateDTO;
+
+import java.util.Date;
 import java.util.List;
 
 public interface AvailableDateService {
@@ -10,4 +12,5 @@ public interface AvailableDateService {
     AvailableDateDTO getAvailableDateById(Long id);
     List<AvailableDateDTO> getAllAvailableDates();
     List<AvailableDateDTO> getAvailableDatesByDoctorId(Long doctorId);
+    Integer getCurrentAppointmentCount(Date date, Long doctorId);
 }

@@ -11,6 +11,7 @@ import ceksioglu.vet_management_sys.core.exception.ResourceAlreadyExistsExceptio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,8 @@ public class AvailableDateManager implements AvailableDateService {
         AvailableDate availableDate = new AvailableDate();
         availableDate.setAvailableDate(availableDateDTO.getAvailableDate());
         availableDate.setDoctor(doctor);
+        availableDate.setDailyAppointmentLimit(availableDateDTO.getDailyAppointmentLimit());
+        availableDate.setCurrentAppointmentCount(0);
 
         AvailableDate savedAvailableDate = availableDateRepository.save(availableDate);
         return convertToDTO(savedAvailableDate);
@@ -58,6 +61,9 @@ public class AvailableDateManager implements AvailableDateService {
 
         availableDate.setAvailableDate(availableDateDTO.getAvailableDate());
         availableDate.setDoctor(doctor);
+        availableDate.setDailyAppointmentLimit(availableDateDTO.getDailyAppointmentLimit());
+        // Mevcut randevu sayısını koruyoruz
+        // availableDate.setCurrentAppointmentCount(availableDateDTO.getCurrentAppointmentCount());
 
         AvailableDate updatedAvailableDate = availableDateRepository.save(availableDate);
         return convertToDTO(updatedAvailableDate);
@@ -92,11 +98,20 @@ public class AvailableDateManager implements AvailableDateService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Integer getCurrentAppointmentCount(Date date, Long doctorId) {
+        AvailableDate availableDate = availableDateRepository.findByDoctorIdAndAvailableDate(doctorId, date)
+                .orElseThrow(() -> new ResourceNotFoundException("Available date not found for doctor on this date"));
+        return availableDate.getCurrentAppointmentCount();
+    }
+
     private AvailableDateDTO convertToDTO(AvailableDate availableDate) {
         AvailableDateDTO dto = new AvailableDateDTO();
         dto.setId(availableDate.getId());
         dto.setAvailableDate(availableDate.getAvailableDate());
         dto.setDoctorId(availableDate.getDoctor().getId());
+        dto.setDailyAppointmentLimit(availableDate.getDailyAppointmentLimit());
+        dto.setCurrentAppointmentCount(availableDate.getCurrentAppointmentCount());
         return dto;
     }
 }
