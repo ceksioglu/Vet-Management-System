@@ -1,80 +1,112 @@
 package ceksioglu.vet_management_sys.controller;
 
-import ceksioglu.vet_management_sys.entity.Animal;
-import ceksioglu.vet_management_sys.service.concretes.AnimalManager;
+import ceksioglu.vet_management_sys.dto.AnimalDTO;
+import ceksioglu.vet_management_sys.service.abstracts.AnimalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * AnimalController, hayvanlarla ilgili API endpointlerini sağlar.
- */
 @RestController
 @RequestMapping("/api/animals")
+@Tag(name = "Animal", description = "Animal management APIs")
 public class AnimalController {
 
-    private final AnimalManager animalManager;
+    private final AnimalService animalService;
 
     @Autowired
-    public AnimalController(AnimalManager animalManager) {
-        this.animalManager = animalManager;
+    public AnimalController(AnimalService animalService) {
+        this.animalService = animalService;
     }
 
-    /**
-     * Tüm hayvanları getirir.
-     *
-     * @return Tüm hayvanların listesi
-     */
-    @GetMapping
-    public List<Animal> getAllAnimals() {
-        return animalManager.getAllAnimals();
-    }
-
-    /**
-     * Belirli bir ID'ye sahip hayvanı getirir.
-     *
-     * @param id Hayvanın ID'si
-     * @return Hayvan nesnesi
-     */
-    @GetMapping("/{id}")
-    public Animal getAnimalById(@PathVariable Long id) {
-        return animalManager.getAnimalById(id);
-    }
-
-    /**
-     * Yeni bir hayvan oluşturur.
-     *
-     * @param animal Oluşturulacak hayvan nesnesi
-     * @return Oluşturulan hayvan nesnesi
-     */
+    @Operation(summary = "Create a new animal", description = "Creates a new animal with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Animal created successfully",
+                    content = @Content(schema = @Schema(implementation = AnimalDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "409", description = "Animal already exists")
+    })
     @PostMapping
-    public Animal createAnimal(@RequestBody Animal animal) {
-        return animalManager.createAnimal(animal);
+    public ResponseEntity<AnimalDTO> createAnimal(@RequestBody AnimalDTO animalDTO) {
+        AnimalDTO savedAnimal = animalService.saveAnimal(animalDTO);
+        return new ResponseEntity<>(savedAnimal, HttpStatus.CREATED);
     }
 
-    /**
-     * Belirli bir ID'ye sahip hayvanı günceller.
-     *
-     * @param id Güncellenecek hayvanın ID'si
-     * @param animal Güncellenmiş hayvan nesnesi
-     * @return Güncellenmiş hayvan nesnesi
-     */
+    @Operation(summary = "Update an animal", description = "Updates an existing animal's details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Animal updated successfully",
+                    content = @Content(schema = @Schema(implementation = AnimalDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Animal not found")
+    })
     @PutMapping("/{id}")
-    public Animal updateAnimal(@PathVariable Long id, @RequestBody Animal animal) {
-        return animalManager.updateAnimal(id, animal);
+    public ResponseEntity<AnimalDTO> updateAnimal(
+            @Parameter(description = "ID of the animal to update") @PathVariable Long id,
+            @RequestBody AnimalDTO animalDTO) {
+        AnimalDTO updatedAnimal = animalService.updateAnimal(id, animalDTO);
+        return ResponseEntity.ok(updatedAnimal);
     }
 
-    /**
-     * Belirli bir ID'ye sahip hayvanı siler.
-     *
-     * @param id Silinecek hayvanın ID'si
-     * @return NoContent durumunda HTTP yanıtı
-     */
+    @Operation(summary = "Delete an animal", description = "Deletes an animal by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Animal deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Animal not found")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAnimal(@PathVariable Long id) {
-        animalManager.deleteAnimal(id);
+    public ResponseEntity<Void> deleteAnimal(
+            @Parameter(description = "ID of the animal to delete") @PathVariable Long id) {
+        animalService.deleteAnimal(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get an animal by ID", description = "Retrieves an animal's details by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Animal found",
+                    content = @Content(schema = @Schema(implementation = AnimalDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Animal not found")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<AnimalDTO> getAnimalById(
+            @Parameter(description = "ID of the animal to retrieve") @PathVariable Long id) {
+        AnimalDTO animal = animalService.getAnimalById(id);
+        return ResponseEntity.ok(animal);
+    }
+
+    @Operation(summary = "Get all animals", description = "Retrieves a list of all animals")
+    @ApiResponse(responseCode = "200", description = "List of animals retrieved successfully",
+            content = @Content(schema = @Schema(implementation = AnimalDTO.class)))
+    @GetMapping
+    public ResponseEntity<List<AnimalDTO>> getAllAnimals() {
+        List<AnimalDTO> animals = animalService.getAllAnimals();
+        return ResponseEntity.ok(animals);
+    }
+
+    @Operation(summary = "Get animals by name", description = "Retrieves a list of animals with the given name")
+    @ApiResponse(responseCode = "200", description = "List of animals retrieved successfully",
+            content = @Content(schema = @Schema(implementation = AnimalDTO.class)))
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<AnimalDTO>> getAnimalsByName(
+            @Parameter(description = "Name of the animals to retrieve") @PathVariable String name) {
+        List<AnimalDTO> animals = animalService.getAnimalsByName(name);
+        return ResponseEntity.ok(animals);
+    }
+
+    @Operation(summary = "Get animals by customer ID", description = "Retrieves a list of animals belonging to a specific customer")
+    @ApiResponse(responseCode = "200", description = "List of animals retrieved successfully",
+            content = @Content(schema = @Schema(implementation = AnimalDTO.class)))
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<AnimalDTO>> getAnimalsByCustomerId(
+            @Parameter(description = "ID of the customer whose animals to retrieve") @PathVariable Long customerId) {
+        List<AnimalDTO> animals = animalService.getAnimalsByCustomerId(customerId);
+        return ResponseEntity.ok(animals);
     }
 }

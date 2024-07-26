@@ -38,4 +38,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Animal> animals;
+
+    public Customer(Long customerId) {
+        this.id = customerId;
+    }
 }

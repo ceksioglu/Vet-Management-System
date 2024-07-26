@@ -6,26 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AvailableDateRepository extends JpaRepository<AvailableDate, Long> {
 
-    /**
-     * Belirli bir doktor ve tarih için mevcut olan müsait günü kontrol eder.
-     *
-     * @param doctorId Doktorun ID'si
-     * @param availableDate Müsait günün tarihi
-     * @return Mevcut olan müsait gün
-     */
+    List<AvailableDate> findByDoctorId(Long doctorId);
+
     boolean existsByDoctorIdAndAvailableDate(Long doctorId, Date availableDate);
 
-    /**
-     * Belirli bir doktor ve tarih aralığı için mevcut olan müsait günleri döndürür.
-     *
-     * @param doctorId Doktorun ID'si
-     * @param startDate Başlangıç tarihi
-     * @param endDate Bitiş tarihi
-     * @return Belirli bir tarih aralığında ve doktora ait müsait günlerin listesi
-     */
-    List<AvailableDate> findByDoctorIdAndAvailableDateBetween(Long doctorId, Date startDate, Date endDate);
+    Optional<AvailableDate> findByDoctorIdAndAvailableDate(Long doctorId, Date availableDate);
 }

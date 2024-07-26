@@ -1,13 +1,13 @@
 package ceksioglu.vet_management_sys.service.abstracts;
 
-import ceksioglu.vet_management_sys.entity.Customer;
-
+import ceksioglu.vet_management_sys.dto.CustomerDTO;
 import java.util.List;
 
 public interface CustomerService {
-    List<Customer> getAllCustomers();
-    Customer getCustomerById(Long id);
-    Customer createCustomer(Customer customer);
-    Customer updateCustomer(Long id, Customer customer);
+    CustomerDTO saveCustomer(CustomerDTO customerDTO);
+    CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO);
     void deleteCustomer(Long id);
+    CustomerDTO getCustomerById(Long id);
+    List<CustomerDTO> getAllCustomers();
+    List<CustomerDTO> getCustomersByName(String name);
 }

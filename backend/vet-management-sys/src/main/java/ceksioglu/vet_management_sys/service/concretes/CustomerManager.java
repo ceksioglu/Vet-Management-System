@@ -1,18 +1,17 @@
 package ceksioglu.vet_management_sys.service.concretes;
 
+import ceksioglu.vet_management_sys.dto.CustomerDTO;
 import ceksioglu.vet_management_sys.entity.Customer;
-import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
 import ceksioglu.vet_management_sys.repository.CustomerRepository;
 import ceksioglu.vet_management_sys.service.abstracts.CustomerService;
+import ceksioglu.vet_management_sys.core.exception.ResourceNotFoundException;
+import ceksioglu.vet_management_sys.core.exception.ResourceAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * CustomerManager, CustomerService arayüzünü implement eden sınıftır.
- * Müşterilerle ilgili iş mantığını içerir.
- */
 @Service
 public class CustomerManager implements CustomerService {
 
@@ -23,70 +22,83 @@ public class CustomerManager implements CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    /**
-     * Tüm müşterileri getirir.
-     *
-     * @return Tüm müşterilerin listesi
-     */
     @Override
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
+        if (customerRepository.existsByPhone(customerDTO.getPhone())) {
+            throw new ResourceAlreadyExistsException("Customer with this phone number already exists");
+        }
+        Customer customer = convertToEntity(customerDTO);
+        Customer savedCustomer = customerRepository.save(customer);
+        return convertToDTO(savedCustomer);
     }
 
-    /**
-     * Belirli bir ID'ye sahip müşteriyi getirir.
-     *
-     * @param id Müşterinin ID'si
-     * @return Müşteri nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip müşteri bulunamadığında fırlatılır
-     */
     @Override
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Bu ID'ye ait müşteri bulunamadı: " + id));
+    public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+
+        if (!existingCustomer.getPhone().equals(customerDTO.getPhone()) &&
+                customerRepository.existsByPhone(customerDTO.getPhone())) {
+            throw new ResourceAlreadyExistsException("Customer with this phone number already exists");
+        }
+
+        existingCustomer.setName(customerDTO.getName());
+        existingCustomer.setPhone(customerDTO.getPhone());
+        existingCustomer.setMail(customerDTO.getMail());
+        existingCustomer.setAddress(customerDTO.getAddress());
+        existingCustomer.setCity(customerDTO.getCity());
+
+        Customer updatedCustomer = customerRepository.save(existingCustomer);
+        return convertToDTO(updatedCustomer);
     }
 
-    /**
-     * Yeni bir müşteri oluşturur.
-     *
-     * @param customer Oluşturulacak müşteri nesnesi
-     * @return Oluşturulan müşteri nesnesi
-     */
-    @Override
-    public Customer createCustomer(Customer customer) {
-        return customerRepository.save(customer);
-    }
-
-    /**
-     * Belirli bir ID'ye sahip müşteriyi günceller.
-     *
-     * @param id Güncellenecek müşterinin ID'si
-     * @param updatedCustomer Güncellenmiş müşteri nesnesi
-     * @return Güncellenmiş müşteri nesnesi
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip müşteri bulunamadığında fırlatılır
-     */
-    @Override
-    public Customer updateCustomer(Long id, Customer updatedCustomer) {
-        return customerRepository.findById(id).map(customer -> {
-            customer.setName(updatedCustomer.getName());
-            customer.setPhone(updatedCustomer.getPhone());
-            customer.setMail(updatedCustomer.getMail());
-            customer.setAddress(updatedCustomer.getAddress());
-            customer.setCity(updatedCustomer.getCity());
-            return customerRepository.save(customer);
-        }).orElseThrow(() -> new ResourceNotFoundException("Bu ID'ye ait müşteri bulunamadı: " + id));
-    }
-
-    /**
-     * Belirli bir ID'ye sahip müşteriyi siler.
-     *
-     * @param id Silinecek müşterinin ID'si
-     * @throws ResourceNotFoundException Belirtilen ID'ye sahip müşteri bulunamadığında fırlatılır
-     */
     @Override
     public void deleteCustomer(Long id) {
         if (!customerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Bu ID'ye ait müşteri bulunamadı: " + id);
+            throw new ResourceNotFoundException("Customer not found with id: " + id);
         }
         customerRepository.deleteById(id);
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+        return convertToDTO(customer);
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        return customerRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CustomerDTO> getCustomersByName(String name) {
+        return customerRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private CustomerDTO convertToDTO(Customer customer) {
+        CustomerDTO dto = new CustomerDTO();
+        dto.setId(customer.getId());
+        dto.setName(customer.getName());
+        dto.setPhone(customer.getPhone());
+        dto.setMail(customer.getMail());
+        dto.setAddress(customer.getAddress());
+        dto.setCity(customer.getCity());
+        return dto;
+    }
+
+    private Customer convertToEntity(CustomerDTO dto) {
+        Customer customer = new Customer();
+        customer.setName(dto.getName());
+        customer.setPhone(dto.getPhone());
+        customer.setMail(dto.getMail());
+        customer.setAddress(dto.getAddress());
+        customer.setCity(dto.getCity());
+        return customer;
     }
 }

@@ -1,13 +1,16 @@
 package ceksioglu.vet_management_sys.service.abstracts;
 
-import ceksioglu.vet_management_sys.entity.AvailableDate;
+import ceksioglu.vet_management_sys.dto.AvailableDateDTO;
 
+import java.util.Date;
 import java.util.List;
 
 public interface AvailableDateService {
-    List<AvailableDate> getAllAvailableDates();
-    AvailableDate getAvailableDateById(Long id);
-    AvailableDate createAvailableDate(AvailableDate availableDate);
-    AvailableDate updateAvailableDate(Long id, AvailableDate availableDate);
+    AvailableDateDTO saveAvailableDate(AvailableDateDTO availableDateDTO);
+    AvailableDateDTO updateAvailableDate(Long id, AvailableDateDTO availableDateDTO);
     void deleteAvailableDate(Long id);
+    AvailableDateDTO getAvailableDateById(Long id);
+    List<AvailableDateDTO> getAllAvailableDates();
+    List<AvailableDateDTO> getAvailableDatesByDoctorId(Long doctorId);
+    Integer getCurrentAppointmentCount(Date date, Long doctorId);
 }
