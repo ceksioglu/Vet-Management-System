@@ -18,4 +18,5 @@ public class AppointmentDTO {
     private Date appointmentDate;
     private Long doctorId;
     private Long animalId;
+    private Integer appointmentOrder;
 }

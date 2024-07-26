@@ -17,4 +17,6 @@ public class AvailableDateDTO {
     private Long id;
     private Date availableDate;
     private Long DoctorId;
+    private Integer dailyAppointmentLimit;
+    private Integer currentAppointmentCount;
 }
