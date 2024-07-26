@@ -1,80 +1,102 @@
 package ceksioglu.vet_management_sys.controller;
 
-import ceksioglu.vet_management_sys.entity.AvailableDate;
-import ceksioglu.vet_management_sys.service.concretes.AvailableDateManager;
+import ceksioglu.vet_management_sys.dto.AvailableDateDTO;
+import ceksioglu.vet_management_sys.service.abstracts.AvailableDateService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * AvailableDateController, doktorların müsait günleriyle ilgili API endpointlerini sağlar.
- */
 @RestController
 @RequestMapping("/api/available-dates")
+@Tag(name = "Available Date", description = "Available Date management APIs")
 public class AvailableDateController {
 
-    private final AvailableDateManager availableDateManager;
+    private final AvailableDateService availableDateService;
 
     @Autowired
-    public AvailableDateController(AvailableDateManager availableDateManager) {
-        this.availableDateManager = availableDateManager;
+    public AvailableDateController(AvailableDateService availableDateService) {
+        this.availableDateService = availableDateService;
     }
 
-    /**
-     * Tüm müsait günleri getirir.
-     *
-     * @return Tüm müsait günlerin listesi
-     */
-    @GetMapping
-    public List<AvailableDate> getAllAvailableDates() {
-        return availableDateManager.getAllAvailableDates();
-    }
-
-    /**
-     * Belirli bir ID'ye sahip müsait günü getirir.
-     *
-     * @param id Müsait günün ID'si
-     * @return Müsait gün nesnesi
-     */
-    @GetMapping("/{id}")
-    public AvailableDate getAvailableDateById(@PathVariable Long id) {
-        return availableDateManager.getAvailableDateById(id);
-    }
-
-    /**
-     * Yeni bir müsait gün oluşturur.
-     *
-     * @param availableDate Oluşturulacak müsait gün nesnesi
-     * @return Oluşturulan müsait gün nesnesi
-     */
+    @Operation(summary = "Create a new available date", description = "Creates a new available date with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Available date created successfully",
+                    content = @Content(schema = @Schema(implementation = AvailableDateDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "409", description = "Available date already exists")
+    })
     @PostMapping
-    public AvailableDate createAvailableDate(@RequestBody AvailableDate availableDate) {
-        return availableDateManager.createAvailableDate(availableDate);
+    public ResponseEntity<AvailableDateDTO> createAvailableDate(@RequestBody AvailableDateDTO availableDateDTO) {
+        AvailableDateDTO savedAvailableDate = availableDateService.saveAvailableDate(availableDateDTO);
+        return new ResponseEntity<>(savedAvailableDate, HttpStatus.CREATED);
     }
 
-    /**
-     * Belirli bir ID'ye sahip müsait günü günceller.
-     *
-     * @param id Güncellenecek müsait günün ID'si
-     * @param availableDate Güncellenmiş müsait gün nesnesi
-     * @return Güncellenmiş müsait gün nesnesi
-     */
+    @Operation(summary = "Update an available date", description = "Updates an existing available date's details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Available date updated successfully",
+                    content = @Content(schema = @Schema(implementation = AvailableDateDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Available date not found")
+    })
     @PutMapping("/{id}")
-    public AvailableDate updateAvailableDate(@PathVariable Long id, @RequestBody AvailableDate availableDate) {
-        return availableDateManager.updateAvailableDate(id, availableDate);
+    public ResponseEntity<AvailableDateDTO> updateAvailableDate(
+            @Parameter(description = "ID of the available date to update") @PathVariable Long id,
+            @RequestBody AvailableDateDTO availableDateDTO) {
+        AvailableDateDTO updatedAvailableDate = availableDateService.updateAvailableDate(id, availableDateDTO);
+        return ResponseEntity.ok(updatedAvailableDate);
     }
 
-    /**
-     * Belirli bir ID'ye sahip müsait günü siler.
-     *
-     * @param id Silinecek müsait günün ID'si
-     * @return NoContent durumunda HTTP yanıtı
-     */
+    @Operation(summary = "Delete an available date", description = "Deletes an available date by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Available date deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Available date not found")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAvailableDate(@PathVariable Long id) {
-        availableDateManager.deleteAvailableDate(id);
+    public ResponseEntity<Void> deleteAvailableDate(
+            @Parameter(description = "ID of the available date to delete") @PathVariable Long id) {
+        availableDateService.deleteAvailableDate(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get an available date by ID", description = "Retrieves an available date's details by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Available date found",
+                    content = @Content(schema = @Schema(implementation = AvailableDateDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Available date not found")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<AvailableDateDTO> getAvailableDateById(
+            @Parameter(description = "ID of the available date to retrieve") @PathVariable Long id) {
+        AvailableDateDTO availableDate = availableDateService.getAvailableDateById(id);
+        return ResponseEntity.ok(availableDate);
+    }
+
+    @Operation(summary = "Get all available dates", description = "Retrieves a list of all available dates")
+    @ApiResponse(responseCode = "200", description = "List of available dates retrieved successfully",
+            content = @Content(schema = @Schema(implementation = AvailableDateDTO.class)))
+    @GetMapping
+    public ResponseEntity<List<AvailableDateDTO>> getAllAvailableDates() {
+        List<AvailableDateDTO> availableDates = availableDateService.getAllAvailableDates();
+        return ResponseEntity.ok(availableDates);
+    }
+
+    @Operation(summary = "Get available dates by doctor ID", description = "Retrieves a list of available dates for a specific doctor")
+    @ApiResponse(responseCode = "200", description = "List of available dates retrieved successfully",
+            content = @Content(schema = @Schema(implementation = AvailableDateDTO.class)))
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<AvailableDateDTO>> getAvailableDatesByDoctorId(
+            @Parameter(description = "ID of the doctor") @PathVariable Long doctorId) {
+        List<AvailableDateDTO> availableDates = availableDateService.getAvailableDatesByDoctorId(doctorId);
+        return ResponseEntity.ok(availableDates);
     }
 }
