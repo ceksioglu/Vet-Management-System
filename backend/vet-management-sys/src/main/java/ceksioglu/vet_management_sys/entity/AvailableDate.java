@@ -29,4 +29,10 @@ public class AvailableDate {
     @JoinColumn(name = "doctor_id", nullable = false)
     @JsonIgnore
     private Doctor doctor;
+
+    @Column(name = "daily_appointment_limit")
+    private Integer dailyAppointmentLimit = 10;
+
+    @Column(name = "current_appointment_count")
+    private Integer currentAppointmentCount = 0;
 }
