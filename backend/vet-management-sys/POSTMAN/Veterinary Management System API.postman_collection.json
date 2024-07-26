@@ -1,0 +1,981 @@
+{
+	"info": {
+		"_postman_id": "3cb8db59-b785-4cfa-96f6-cb12f4da7895",
+		"name": "Veterinary Management System API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36868068"
+	},
+	"item": [
+		{
+			"name": "Animals",
+			"item": [
+				{
+					"name": "Get All Animals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/animals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Animal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Max\",\n  \"species\": \"Dog\",\n  \"breed\": \"Labrador\",\n  \"gender\": \"MALE\",\n  \"color\": \"Black\",\n  \"dateOfBirth\": \"2020-01-01\",\n  \"customerId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/animals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Animal by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/animals/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Animal",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Max\",\n  \"species\": \"Dog\",\n  \"breed\": \"Labrador\",\n  \"gender\": \"MALE\",\n  \"color\": \"Brown\",\n  \"dateOfBirth\": \"2020-01-01\",\n  \"customerId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/animals/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Animal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/animals/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Animals by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/animals/name/Max",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals",
+								"name",
+								"Max"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Animals by Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/animals/customer/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"animals",
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"appointmentDate\": \"2023-07-15T10:00:00\",\n  \"doctorId\": 1,\n  \"animalId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Appointment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"appointmentDate\": \"2023-07-16T11:00:00\",\n  \"doctorId\": 1,\n  \"animalId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointments by Date Range and Animal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/animal/1?startDate=2023-07-01&endDate=2023-07-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"animal",
+								"1"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-07-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-07-31"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointments by Date Range and Doctor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/doctor/1?startDate=2023-07-01&endDate=2023-07-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"doctor",
+								"1"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-07-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-07-31"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/order?appointmentDate=2023-07-15&doctorId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"order"
+							],
+							"query": [
+								{
+									"key": "appointmentDate",
+									"value": "2023-07-15"
+								},
+								{
+									"key": "doctorId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Available Dates",
+			"item": [
+				{
+					"name": "Get All Available Dates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Available Date",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"availableDate\": \"2023-07-15\",\n  \"doctorId\": 1,\n  \"dailyAppointmentLimit\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Date by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Available Date",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"availableDate\": \"2023-07-16\",\n  \"doctorId\": 1,\n  \"dailyAppointmentLimit\": 12\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Available Date",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Dates by Doctor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates/doctor/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates",
+								"doctor",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current Appointment Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/available-dates/count?date=2023-07-15&doctorId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"available-dates",
+								"count"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2023-07-15"
+								},
+								{
+									"key": "doctorId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"phone\": \"5551234567\",\n  \"mail\": \"john@example.com\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Anytown\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/customers/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"phone\": \"5559876543\",\n  \"mail\": \"john.doe@example.com\",\n  \"address\": \"456 Oak St\",\n  \"city\": \"Newtown\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/customers/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/customers/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customers by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/customers/name/John",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"customers",
+								"name",
+								"John"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctors",
+			"item": [
+				{
+					"name": "Get All Doctors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Doctor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Dr. Jane Smith\",\n  \"phone\": \"5551234567\",\n  \"mail\": \"jane@example.com\",\n  \"address\": \"789 Elm St\",\n  \"city\": \"Medtown\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/doctors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctors/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Doctor",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Dr. Jane Smith\",\n  \"phone\": \"5559876543\",\n  \"mail\": \"jane.smith@example.com\",\n  \"address\": \"101 Pine St\",\n  \"city\": \"Vetville\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/doctors/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Doctor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctors/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vaccines",
+			"item": [
+				{
+					"name": "Get All Vaccines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vaccine",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Rabies Vaccine\",\n  \"code\": \"RAB001\",\n  \"protectionStartDate\": \"2023-07-15\",\n  \"protectionFinishDate\": \"2024-07-15\",\n  \"animalId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vaccine by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vaccine",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Rabies Vaccine\",\n  \"code\": \"RAB002\",\n  \"protectionStartDate\": \"2023-07-16\",\n  \"protectionFinishDate\": \"2024-07-16\",\n  \"animalId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vaccine",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vaccines by Animal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines/animal/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines",
+								"animal",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vaccines by Protection End Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vaccines/protection-end-date?startDate=2023-07-01&endDate=2024-07-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vaccines",
+								"protection-end-date"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-07-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-07-31"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081"
+		}
+	]
+}
