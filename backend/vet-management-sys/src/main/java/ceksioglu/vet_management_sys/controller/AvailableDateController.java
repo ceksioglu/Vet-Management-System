@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -98,5 +100,15 @@ public class AvailableDateController {
             @Parameter(description = "ID of the doctor") @PathVariable Long doctorId) {
         List<AvailableDateDTO> availableDates = availableDateService.getAvailableDatesByDoctorId(doctorId);
         return ResponseEntity.ok(availableDates);
+    }
+
+    @Operation(summary = "Get current appointment count", description = "Retrieves the current appointment count for a specific date and doctor")
+    @ApiResponse(responseCode = "200", description = "Current appointment count retrieved successfully")
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCurrentAppointmentCount(
+            @Parameter(description = "Date to check") @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date,
+            @Parameter(description = "ID of the doctor") @RequestParam Long doctorId) {
+        Integer count = availableDateService.getCurrentAppointmentCount(date, doctorId);
+        return ResponseEntity.ok(count);
     }
 }

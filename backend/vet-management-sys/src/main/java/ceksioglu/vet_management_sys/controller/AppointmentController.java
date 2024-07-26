@@ -116,4 +116,14 @@ public class AppointmentController {
         List<AppointmentDTO> appointments = appointmentService.getAppointmentsByDateRangeAndDoctor(startDate, endDate, doctorId);
         return ResponseEntity.ok(appointments);
     }
+
+    @Operation(summary = "Get appointment order", description = "Retrieves the order of an appointment for a specific date and doctor")
+    @ApiResponse(responseCode = "200", description = "Appointment order retrieved successfully")
+    @GetMapping("/order")
+    public ResponseEntity<Integer> getAppointmentOrder(
+            @Parameter(description = "Date of the appointment") @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date appointmentDate,
+            @Parameter(description = "ID of the doctor") @RequestParam Long doctorId) {
+        Integer order = appointmentService.getAppointmentOrder(appointmentDate, doctorId);
+        return ResponseEntity.ok(order);
+    }
 }
