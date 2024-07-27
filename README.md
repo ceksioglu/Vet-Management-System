@@ -5,7 +5,7 @@
 ```
 http://localhost:8081/swagger-ui/index.html#/
 ```
-Randevular saat ile kaydedilmek yerine sıra ile kaydediliyor (proje geliştirirken bazı sorunlar yaşandı). Bunun mantığı bir doktor bir günde bizim belirlediğimiz randevu sayısı kadar çalışabilir. (Genel olarak 10 randevu, bu değer değiştirilebilir) mantığında kodlandı. Her randevu bir saat kabul ediliyor. Bu randevular daha sonra sıraya sokuldu ve böylece randevu defteri düzene sokuldu. Bu değerleri API'den çekerek görebilirsiniz.
+Randevular saat ile kaydedilmek yerine sıra ile kaydediliyor (proje geliştirirken bazı sorunlar yaşandı). Bunun mantığı bir doktor bir günde bizim belirlediğimiz randevu sayısı kadar çalışabilir (Genel olarak 10 randevu, bu değer değiştirilebilir). Her randevu bir saat kabul ediliyor. Bu randevular daha sonra sıraya sokuldu ve böylece randevu defteri düzene sokuldu. Bu değerleri API'den çekerek görebilirsiniz.
 
 Tarih formatı: 2023-07-15 (YIL / AY / GÜN) şeklindedir.
 
