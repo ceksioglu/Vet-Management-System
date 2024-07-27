@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Repository interface for Appointment entity.
+ */
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByAppointmentDateBetweenAndAnimalId(Date startDate, Date endDate, Long animalId);

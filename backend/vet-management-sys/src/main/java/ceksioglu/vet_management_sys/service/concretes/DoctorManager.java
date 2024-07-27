@@ -12,16 +12,31 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing doctors.
+ */
 @Service
 public class DoctorManager implements DoctorService {
 
     private final DoctorRepository doctorRepository;
 
+    /**
+     * Constructor for DoctorManager.
+     *
+     * @param doctorRepository the doctor repository
+     */
     @Autowired
     public DoctorManager(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
     }
 
+    /**
+     * Saves a doctor.
+     *
+     * @param doctorDTO the doctor DTO
+     * @return the saved doctor DTO
+     * @throws ResourceAlreadyExistsException if a doctor with the same email already exists
+     */
     @Override
     public DoctorDTO saveDoctor(DoctorDTO doctorDTO) {
         if (doctorRepository.existsByMail(doctorDTO.getMail())) {
@@ -32,6 +47,15 @@ public class DoctorManager implements DoctorService {
         return convertToDTO(savedDoctor);
     }
 
+    /**
+     * Updates a doctor.
+     *
+     * @param id the doctor ID
+     * @param doctorDTO the doctor DTO
+     * @return the updated doctor DTO
+     * @throws ResourceNotFoundException if the doctor is not found
+     * @throws ResourceAlreadyExistsException if a doctor with the same email already exists
+     */
     @Override
     public DoctorDTO updateDoctor(Long id, DoctorDTO doctorDTO) {
         Doctor existingDoctor = doctorRepository.findById(id)
@@ -52,6 +76,12 @@ public class DoctorManager implements DoctorService {
         return convertToDTO(updatedDoctor);
     }
 
+    /**
+     * Deletes a doctor by ID.
+     *
+     * @param id the doctor ID
+     * @throws ResourceNotFoundException if the doctor is not found
+     */
     @Override
     public void deleteDoctor(Long id) {
         if (!doctorRepository.existsById(id)) {
@@ -60,6 +90,13 @@ public class DoctorManager implements DoctorService {
         doctorRepository.deleteById(id);
     }
 
+    /**
+     * Gets a doctor by ID.
+     *
+     * @param id the doctor ID
+     * @return the doctor DTO
+     * @throws ResourceNotFoundException if the doctor is not found
+     */
     @Override
     public DoctorDTO getDoctorById(Long id) {
         Doctor doctor = doctorRepository.findById(id)
@@ -67,6 +104,11 @@ public class DoctorManager implements DoctorService {
         return convertToDTO(doctor);
     }
 
+    /**
+     * Gets all doctors.
+     *
+     * @return the list of doctor DTOs
+     */
     @Override
     public List<DoctorDTO> getAllDoctors() {
         return doctorRepository.findAll().stream()
@@ -74,6 +116,12 @@ public class DoctorManager implements DoctorService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Converts a doctor entity to a DTO.
+     *
+     * @param doctor the doctor entity
+     * @return the doctor DTO
+     */
     private DoctorDTO convertToDTO(Doctor doctor) {
         DoctorDTO dto = new DoctorDTO();
         dto.setId(doctor.getId());
@@ -85,6 +133,12 @@ public class DoctorManager implements DoctorService {
         return dto;
     }
 
+    /**
+     * Converts a doctor DTO to an entity.
+     *
+     * @param dto the doctor DTO
+     * @return the doctor entity
+     */
     private Doctor convertToEntity(DoctorDTO dto) {
         Doctor doctor = new Doctor();
         doctor.setName(dto.getName());

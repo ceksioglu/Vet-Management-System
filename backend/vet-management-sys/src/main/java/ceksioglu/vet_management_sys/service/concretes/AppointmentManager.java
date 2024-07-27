@@ -19,6 +19,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing appointments.
+ */
 @Service
 public class AppointmentManager implements AppointmentService {
 
@@ -27,6 +30,14 @@ public class AppointmentManager implements AppointmentService {
     private final DoctorRepository doctorRepository;
     private final AvailableDateRepository availableDateRepository;
 
+    /**
+     * Constructor for AppointmentManager.
+     *
+     * @param appointmentRepository the appointment repository
+     * @param animalRepository the animal repository
+     * @param doctorRepository the doctor repository
+     * @param availableDateRepository the available date repository
+     */
     @Autowired
     public AppointmentManager(AppointmentRepository appointmentRepository,
                               AnimalRepository animalRepository,
@@ -38,6 +49,14 @@ public class AppointmentManager implements AppointmentService {
         this.availableDateRepository = availableDateRepository;
     }
 
+    /**
+     * Saves an appointment.
+     *
+     * @param appointmentDTO the appointment DTO
+     * @return the saved appointment DTO
+     * @throws ResourceNotFoundException if the doctor or animal is not found
+     * @throws AppointmentConflictException if the doctor has reached the daily appointment limit
+     */
     @Override
     public AppointmentDTO saveAppointment(AppointmentDTO appointmentDTO) {
         Doctor doctor = doctorRepository.findById(appointmentDTO.getDoctorId())
@@ -61,7 +80,7 @@ public class AppointmentManager implements AppointmentService {
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
-        // Randevu sayısını artır
+        // Increase the appointment count
         availableDate.setCurrentAppointmentCount(availableDate.getCurrentAppointmentCount() + 1);
         availableDateRepository.save(availableDate);
 
@@ -71,6 +90,15 @@ public class AppointmentManager implements AppointmentService {
         return savedAppointmentDTO;
     }
 
+    /**
+     * Updates an appointment.
+     *
+     * @param id the appointment ID
+     * @param appointmentDTO the appointment DTO
+     * @return the updated appointment DTO
+     * @throws ResourceNotFoundException if the appointment, doctor, or animal is not found
+     * @throws AppointmentConflictException if the doctor has reached the daily appointment limit for the new date
+     */
     @Override
     public AppointmentDTO updateAppointment(Long id, AppointmentDTO appointmentDTO) {
         Appointment appointment = appointmentRepository.findById(id)
@@ -89,19 +117,19 @@ public class AppointmentManager implements AppointmentService {
         if (!appointment.getDoctor().getId().equals(doctor.getId()) ||
                 !appointment.getAppointmentDate().equals(appointmentDTO.getAppointmentDate())) {
 
-            // Eski randevu tarihindeki sayıyı azalt
+            // Decrease the count for the old appointment date
             AvailableDate oldAvailableDate = availableDateRepository.findByDoctorIdAndAvailableDate(
                             appointment.getDoctor().getId(), appointment.getAppointmentDate())
                     .orElseThrow(() -> new ResourceNotFoundException("Old available date not found"));
             oldAvailableDate.setCurrentAppointmentCount(oldAvailableDate.getCurrentAppointmentCount() - 1);
             availableDateRepository.save(oldAvailableDate);
 
-            // Yeni tarih için kontrol
+            // Check for the new date
             if (availableDate.getCurrentAppointmentCount() >= availableDate.getDailyAppointmentLimit()) {
                 throw new AppointmentConflictException("Doctor has reached the daily appointment limit for the new date");
             }
 
-            // Yeni randevu tarihindeki sayıyı artır
+            // Increase the count for the new appointment date
             availableDate.setCurrentAppointmentCount(availableDate.getCurrentAppointmentCount() + 1);
             availableDateRepository.save(availableDate);
         }
@@ -117,12 +145,18 @@ public class AppointmentManager implements AppointmentService {
         return updatedAppointmentDTO;
     }
 
+    /**
+     * Deletes an appointment by ID.
+     *
+     * @param id the appointment ID
+     * @throws ResourceNotFoundException if the appointment is not found
+     */
     @Override
     public void deleteAppointment(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
 
-        // Randevu sayısını azalt
+        // Decrease the appointment count
         AvailableDate availableDate = availableDateRepository.findByDoctorIdAndAvailableDate(
                         appointment.getDoctor().getId(), appointment.getAppointmentDate())
                 .orElseThrow(() -> new ResourceNotFoundException("Available date not found"));
@@ -132,6 +166,13 @@ public class AppointmentManager implements AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
+    /**
+     * Gets an appointment by ID.
+     *
+     * @param id the appointment ID
+     * @return the appointment DTO
+     * @throws ResourceNotFoundException if the appointment is not found
+     */
     @Override
     public AppointmentDTO getAppointmentById(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
@@ -139,6 +180,11 @@ public class AppointmentManager implements AppointmentService {
         return convertToDTO(appointment);
     }
 
+    /**
+     * Gets all appointments.
+     *
+     * @return the list of appointment DTOs
+     */
     @Override
     public List<AppointmentDTO> getAllAppointments() {
         return appointmentRepository.findAll().stream()
@@ -146,6 +192,14 @@ public class AppointmentManager implements AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets appointments by date range and animal.
+     *
+     * @param startDate the start date
+     * @param endDate the end date
+     * @param animalId the animal ID
+     * @return the list of appointment DTOs
+     */
     @Override
     public List<AppointmentDTO> getAppointmentsByDateRangeAndAnimal(Date startDate, Date endDate, Long animalId) {
         return appointmentRepository.findByAppointmentDateBetweenAndAnimalId(startDate, endDate, animalId).stream()
@@ -153,6 +207,14 @@ public class AppointmentManager implements AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets appointments by date range and doctor.
+     *
+     * @param startDate the start date
+     * @param endDate the end date
+     * @param doctorId the doctor ID
+     * @return the list of appointment DTOs
+     */
     @Override
     public List<AppointmentDTO> getAppointmentsByDateRangeAndDoctor(Date startDate, Date endDate, Long doctorId) {
         return appointmentRepository.findByAppointmentDateBetweenAndDoctorId(startDate, endDate, doctorId).stream()
@@ -160,6 +222,14 @@ public class AppointmentManager implements AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets the appointment order for a given date and doctor.
+     *
+     * @param appointmentDate the appointment date
+     * @param doctorId the doctor ID
+     * @return the appointment order
+     * @throws ResourceNotFoundException if the available date is not found
+     */
     @Override
     public Integer getAppointmentOrder(Date appointmentDate, Long doctorId) {
         AvailableDate availableDate = availableDateRepository.findByDoctorIdAndAvailableDate(doctorId, appointmentDate)
@@ -167,6 +237,13 @@ public class AppointmentManager implements AppointmentService {
         return availableDate.getCurrentAppointmentCount();
     }
 
+    /**
+     * Converts an appointment entity to a DTO.
+     *
+     * @param appointment the appointment entity
+     * @return the appointment DTO
+     * @throws ResourceNotFoundException if the available date is not found
+     */
     private AppointmentDTO convertToDTO(Appointment appointment) {
         AppointmentDTO dto = new AppointmentDTO();
         dto.setId(appointment.getId());
@@ -174,7 +251,7 @@ public class AppointmentManager implements AppointmentService {
         dto.setDoctorId(appointment.getDoctor().getId());
         dto.setAnimalId(appointment.getAnimal().getId());
 
-        // Randevu sırasını bulmak için
+        // To find the appointment order
         AvailableDate availableDate = availableDateRepository.findByDoctorIdAndAvailableDate(
                         appointment.getDoctor().getId(), appointment.getAppointmentDate())
                 .orElseThrow(() -> new ResourceNotFoundException("Available date not found"));

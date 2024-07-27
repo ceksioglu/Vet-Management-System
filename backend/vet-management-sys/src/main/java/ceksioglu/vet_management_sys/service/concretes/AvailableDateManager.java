@@ -15,18 +15,35 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing available dates.
+ */
 @Service
 public class AvailableDateManager implements AvailableDateService {
 
     private final AvailableDateRepository availableDateRepository;
     private final DoctorRepository doctorRepository;
 
+    /**
+     * Constructor for AvailableDateManager.
+     *
+     * @param availableDateRepository the available date repository
+     * @param doctorRepository the doctor repository
+     */
     @Autowired
     public AvailableDateManager(AvailableDateRepository availableDateRepository, DoctorRepository doctorRepository) {
         this.availableDateRepository = availableDateRepository;
         this.doctorRepository = doctorRepository;
     }
 
+    /**
+     * Saves an available date.
+     *
+     * @param availableDateDTO the available date DTO
+     * @return the saved available date DTO
+     * @throws ResourceNotFoundException if the doctor is not found
+     * @throws ResourceAlreadyExistsException if the date is already available for the doctor
+     */
     @Override
     public AvailableDateDTO saveAvailableDate(AvailableDateDTO availableDateDTO) {
         Doctor doctor = doctorRepository.findById(availableDateDTO.getDoctorId())
@@ -46,6 +63,15 @@ public class AvailableDateManager implements AvailableDateService {
         return convertToDTO(savedAvailableDate);
     }
 
+    /**
+     * Updates an available date.
+     *
+     * @param id the available date ID
+     * @param availableDateDTO the available date DTO
+     * @return the updated available date DTO
+     * @throws ResourceNotFoundException if the available date or doctor is not found
+     * @throws ResourceAlreadyExistsException if the date is already available for the doctor
+     */
     @Override
     public AvailableDateDTO updateAvailableDate(Long id, AvailableDateDTO availableDateDTO) {
         AvailableDate availableDate = availableDateRepository.findById(id)
@@ -62,13 +88,19 @@ public class AvailableDateManager implements AvailableDateService {
         availableDate.setAvailableDate(availableDateDTO.getAvailableDate());
         availableDate.setDoctor(doctor);
         availableDate.setDailyAppointmentLimit(availableDateDTO.getDailyAppointmentLimit());
-        // Mevcut randevu sayısını koruyoruz
+        // Preserve the current appointment count
         // availableDate.setCurrentAppointmentCount(availableDateDTO.getCurrentAppointmentCount());
 
         AvailableDate updatedAvailableDate = availableDateRepository.save(availableDate);
         return convertToDTO(updatedAvailableDate);
     }
 
+    /**
+     * Deletes an available date by ID.
+     *
+     * @param id the available date ID
+     * @throws ResourceNotFoundException if the available date is not found
+     */
     @Override
     public void deleteAvailableDate(Long id) {
         if (!availableDateRepository.existsById(id)) {
@@ -77,6 +109,13 @@ public class AvailableDateManager implements AvailableDateService {
         availableDateRepository.deleteById(id);
     }
 
+    /**
+     * Gets an available date by ID.
+     *
+     * @param id the available date ID
+     * @return the available date DTO
+     * @throws ResourceNotFoundException if the available date is not found
+     */
     @Override
     public AvailableDateDTO getAvailableDateById(Long id) {
         AvailableDate availableDate = availableDateRepository.findById(id)
@@ -84,6 +123,11 @@ public class AvailableDateManager implements AvailableDateService {
         return convertToDTO(availableDate);
     }
 
+    /**
+     * Gets all available dates.
+     *
+     * @return the list of available date DTOs
+     */
     @Override
     public List<AvailableDateDTO> getAllAvailableDates() {
         return availableDateRepository.findAll().stream()
@@ -91,6 +135,12 @@ public class AvailableDateManager implements AvailableDateService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets available dates by doctor ID.
+     *
+     * @param doctorId the doctor ID
+     * @return the list of available date DTOs
+     */
     @Override
     public List<AvailableDateDTO> getAvailableDatesByDoctorId(Long doctorId) {
         return availableDateRepository.findByDoctorId(doctorId).stream()
@@ -98,6 +148,14 @@ public class AvailableDateManager implements AvailableDateService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets the current appointment count for a given date and doctor.
+     *
+     * @param date the date
+     * @param doctorId the doctor ID
+     * @return the current appointment count
+     * @throws ResourceNotFoundException if the available date is not found
+     */
     @Override
     public Integer getCurrentAppointmentCount(Date date, Long doctorId) {
         AvailableDate availableDate = availableDateRepository.findByDoctorIdAndAvailableDate(doctorId, date)
@@ -105,6 +163,12 @@ public class AvailableDateManager implements AvailableDateService {
         return availableDate.getCurrentAppointmentCount();
     }
 
+    /**
+     * Converts an available date entity to a DTO.
+     *
+     * @param availableDate the available date entity
+     * @return the available date DTO
+     */
     private AvailableDateDTO convertToDTO(AvailableDate availableDate) {
         AvailableDateDTO dto = new AvailableDateDTO();
         dto.setId(availableDate.getId());
