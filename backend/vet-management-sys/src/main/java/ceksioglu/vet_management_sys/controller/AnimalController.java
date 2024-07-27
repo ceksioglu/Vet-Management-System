@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing animals.
+ */
 @RestController
 @RequestMapping("/api/animals")
 @Tag(name = "Animal", description = "Animal management APIs")
@@ -23,11 +26,22 @@ public class AnimalController {
 
     private final AnimalService animalService;
 
+    /**
+     * Constructor for AnimalController.
+     *
+     * @param animalService the animal service
+     */
     @Autowired
     public AnimalController(AnimalService animalService) {
         this.animalService = animalService;
     }
 
+    /**
+     * Creates a new animal.
+     *
+     * @param animalDTO the animal DTO
+     * @return the response entity with the saved animal DTO and CREATED status
+     */
     @Operation(summary = "Create a new animal", description = "Creates a new animal with the provided details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Animal created successfully",
@@ -41,6 +55,13 @@ public class AnimalController {
         return new ResponseEntity<>(savedAnimal, HttpStatus.CREATED);
     }
 
+    /**
+     * Updates an existing animal.
+     *
+     * @param id the animal ID
+     * @param animalDTO the animal DTO
+     * @return the response entity with the updated animal DTO and OK status
+     */
     @Operation(summary = "Update an animal", description = "Updates an existing animal's details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Animal updated successfully",
@@ -56,6 +77,12 @@ public class AnimalController {
         return ResponseEntity.ok(updatedAnimal);
     }
 
+    /**
+     * Deletes an animal by its ID.
+     *
+     * @param id the animal ID
+     * @return the response entity with no content and NO_CONTENT status
+     */
     @Operation(summary = "Delete an animal", description = "Deletes an animal by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Animal deleted successfully"),
@@ -68,6 +95,12 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Retrieves an animal's details by its ID.
+     *
+     * @param id the animal ID
+     * @return the response entity with the animal DTO and OK status
+     */
     @Operation(summary = "Get an animal by ID", description = "Retrieves an animal's details by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Animal found",
@@ -81,6 +114,11 @@ public class AnimalController {
         return ResponseEntity.ok(animal);
     }
 
+    /**
+     * Retrieves a list of all animals.
+     *
+     * @return the response entity with the list of animal DTOs and OK status
+     */
     @Operation(summary = "Get all animals", description = "Retrieves a list of all animals")
     @ApiResponse(responseCode = "200", description = "List of animals retrieved successfully",
             content = @Content(schema = @Schema(implementation = AnimalDTO.class)))
@@ -90,6 +128,12 @@ public class AnimalController {
         return ResponseEntity.ok(animals);
     }
 
+    /**
+     * Retrieves a list of animals with the given name.
+     *
+     * @param name the name of the animals to retrieve
+     * @return the response entity with the list of animal DTOs and OK status
+     */
     @Operation(summary = "Get animals by name", description = "Retrieves a list of animals with the given name")
     @ApiResponse(responseCode = "200", description = "List of animals retrieved successfully",
             content = @Content(schema = @Schema(implementation = AnimalDTO.class)))
@@ -100,6 +144,12 @@ public class AnimalController {
         return ResponseEntity.ok(animals);
     }
 
+    /**
+     * Retrieves a list of animals belonging to a specific customer.
+     *
+     * @param customerId the ID of the customer whose animals to retrieve
+     * @return the response entity with the list of animal DTOs and OK status
+     */
     @Operation(summary = "Get animals by customer ID", description = "Retrieves a list of animals belonging to a specific customer")
     @ApiResponse(responseCode = "200", description = "List of animals retrieved successfully",
             content = @Content(schema = @Schema(implementation = AnimalDTO.class)))

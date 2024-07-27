@@ -13,18 +13,34 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing animals.
+ */
 @Service
 public class AnimalManager implements AnimalService {
 
     private final AnimalRepository animalRepository;
     private final CustomerRepository customerRepository;
 
+    /**
+     * Constructor for AnimalManager.
+     *
+     * @param animalRepository the animal repository
+     * @param customerRepository the customer repository
+     */
     @Autowired
     public AnimalManager(AnimalRepository animalRepository, CustomerRepository customerRepository) {
         this.animalRepository = animalRepository;
         this.customerRepository = customerRepository;
     }
 
+    /**
+     * Saves an animal.
+     *
+     * @param animalDTO the animal DTO
+     * @return the saved animal DTO
+     * @throws ResourceNotFoundException if the customer is not found
+     */
     @Override
     public AnimalDTO saveAnimal(AnimalDTO animalDTO) {
         Customer customer = customerRepository.findById(animalDTO.getCustomerId())
@@ -43,6 +59,14 @@ public class AnimalManager implements AnimalService {
         return convertToDTO(savedAnimal);
     }
 
+    /**
+     * Updates an animal.
+     *
+     * @param id the animal ID
+     * @param animalDTO the animal DTO
+     * @return the updated animal DTO
+     * @throws ResourceNotFoundException if the animal or customer is not found
+     */
     @Override
     public AnimalDTO updateAnimal(Long id, AnimalDTO animalDTO) {
         Animal animal = animalRepository.findById(id)
@@ -63,6 +87,12 @@ public class AnimalManager implements AnimalService {
         return convertToDTO(updatedAnimal);
     }
 
+    /**
+     * Deletes an animal by ID.
+     *
+     * @param id the animal ID
+     * @throws ResourceNotFoundException if the animal is not found
+     */
     @Override
     public void deleteAnimal(Long id) {
         if (!animalRepository.existsById(id)) {
@@ -71,6 +101,13 @@ public class AnimalManager implements AnimalService {
         animalRepository.deleteById(id);
     }
 
+    /**
+     * Gets an animal by ID.
+     *
+     * @param id the animal ID
+     * @return the animal DTO
+     * @throws ResourceNotFoundException if the animal is not found
+     */
     @Override
     public AnimalDTO getAnimalById(Long id) {
         Animal animal = animalRepository.findById(id)
@@ -78,6 +115,11 @@ public class AnimalManager implements AnimalService {
         return convertToDTO(animal);
     }
 
+    /**
+     * Gets all animals.
+     *
+     * @return the list of animal DTOs
+     */
     @Override
     public List<AnimalDTO> getAllAnimals() {
         return animalRepository.findAll().stream()
@@ -85,6 +127,12 @@ public class AnimalManager implements AnimalService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets animals by name.
+     *
+     * @param name the animal name
+     * @return the list of animal DTOs
+     */
     @Override
     public List<AnimalDTO> getAnimalsByName(String name) {
         return animalRepository.findByName(name).stream()
@@ -92,6 +140,12 @@ public class AnimalManager implements AnimalService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets animals by customer ID.
+     *
+     * @param customerId the customer ID
+     * @return the list of animal DTOs
+     */
     @Override
     public List<AnimalDTO> getAnimalsByCustomerId(Long customerId) {
         return animalRepository.findByCustomerId(customerId).stream()
@@ -99,6 +153,12 @@ public class AnimalManager implements AnimalService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Converts an animal entity to a DTO.
+     *
+     * @param animal the animal entity
+     * @return the animal DTO
+     */
     private AnimalDTO convertToDTO(Animal animal) {
         AnimalDTO dto = new AnimalDTO();
         dto.setId(animal.getId());

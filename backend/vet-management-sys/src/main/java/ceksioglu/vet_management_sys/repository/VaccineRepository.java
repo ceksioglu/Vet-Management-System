@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Repository interface for Vaccine entity.
+ */
 @Repository
 public interface VaccineRepository extends JpaRepository<Vaccine, Long> {
     List<Vaccine> findByProtectionFinishDateBetween(Date startDate, Date endDate);

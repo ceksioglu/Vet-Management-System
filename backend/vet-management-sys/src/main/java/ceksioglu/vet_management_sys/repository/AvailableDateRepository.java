@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Repository interface for AvailableDate entity.
+ */
 @Repository
 public interface AvailableDateRepository extends JpaRepository<AvailableDate, Long> {
 

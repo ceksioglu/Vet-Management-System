@@ -34,6 +34,7 @@ public class Vaccine {
     @Column(name = "protection_finish_date", nullable = false)
     private Date protectionFinishDate;
 
+    //Bir hayvanın birden fazla aşısı olabilir.
     @ManyToOne
     @JoinColumn(name = "animal_id", nullable = false)
     @JsonIgnore
