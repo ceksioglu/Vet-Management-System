@@ -1,9 +1,16 @@
 # Veteriner Yönetim Sistemi - Patika.dev Bitirme Projesi
 
 ## Mesut Hocaya Not:
-Proje 8081 portunda çalışmak için ayarlandı.
-(http://localhost:8081/swagger-ui/index.html#/)
+-Proje 8081 portunda çalışmak için ayarlandı.
+```
+http://localhost:8081/swagger-ui/index.html#/
+```
+Randevular saat ile kaydedilmek yerine sıra ile kaydediliyor (proje geliştirirken bazı sorunlar yaşandı). Bunun mantığı bir doktor bir günde en fazla 10 (çalışma saatleri 10 saat olarak belirlendi) randevu alabilir  şeklinde kodlandı (Her randevu 1 saat). Bu randevular sonra sıraya sokuldu. Bu değerleri API'den çekerek görebilirsiniz.
+
+Tarih formatı: 2023-07-15 (YIL / AY / GÜN) şeklindedir.
+
 Projeye daha sonra front end entegrasyonu yapacağım, ama bitmediği için bakmanızın bir anlamı yok.
+
 Bu not kendini proje değerlendirildikten sonra kendini imha edecektir, saygılarımla.
 
 # Veterinary Management System
