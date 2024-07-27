@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 600">
+    <defs>
+        <style>
+            .cls-title { fill: #ffffff; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
+            .cls-attr { fill: #333333; font-family: Arial, sans-serif; font-size: 12px; }
+            .relation { stroke: #666666; stroke-width: 2; }
+            .multiplicity { fill: #333333; font-family: Arial, sans-serif; font-size: 12px; }
+        </style>
+    </defs>
+    
+    <!-- Animal Class -->
+    <rect x="50" y="50" width="160" height="160" rx="10" ry="10" fill="#4e79a7" />
+    <text x="130" y="75" class="cls-title" text-anchor="middle">Animal</text>
+    <line x1="50" y1="85" x2="210" y2="85" stroke="#ffffff" stroke-width="2"/>
+    <text x="60" y="105" class="cls-attr">+ id: Long</text>
+    <text x="60" y="125" class="cls-attr">+ name: String</text>
+    <text x="60" y="145" class="cls-attr">+ species: String</text>
+    <text x="60" y="165" class="cls-attr">+ breed: String</text>
+    <text x="60" y="185" class="cls-attr">+ gender: Gender</text>
+    <text x="60" y="205" class="cls-attr">+ color: String</text>
+    
+    <!-- Customer Class -->
+    <rect x="300" y="50" width="160" height="140" rx="10" ry="10" fill="#f28e2b" />
+    <text x="380" y="75" class="cls-title" text-anchor="middle">Customer</text>
+    <line x1="300" y1="85" x2="460" y2="85" stroke="#ffffff" stroke-width="2"/>
+    <text x="310" y="105" class="cls-attr">+ id: Long</text>
+    <text x="310" y="125" class="cls-attr">+ name: String</text>
+    <text x="310" y="145" class="cls-attr">+ phone: String</text>
+    <text x="310" y="165" class="cls-attr">+ mail: String</text>
+    <text x="310" y="185" class="cls-attr">+ address: String</text>
+    
+    <!-- Doctor Class -->
+    <rect x="550" y="50" width="160" height="140" rx="10" ry="10" fill="#e15759" />
+    <text x="630" y="75" class="cls-title" text-anchor="middle">Doctor</text>
+    <line x1="550" y1="85" x2="710" y2="85" stroke="#ffffff" stroke-width="2"/>
+    <text x="560" y="105" class="cls-attr">+ id: Long</text>
+    <text x="560" y="125" class="cls-attr">+ name: String</text>
+    <text x="560" y="145" class="cls-attr">+ phone: String</text>
+    <text x="560" y="165" class="cls-attr">+ mail: String</text>
+    <text x="560" y="185" class="cls-attr">+ address: String</text>
+    
+    <!-- Appointment Class -->
+    <rect x="300" y="300" width="160" height="80" rx="10" ry="10" fill="#76b7b2" />
+    <text x="380" y="325" class="cls-title" text-anchor="middle">Appointment</text>
+    <line x1="300" y1="335" x2="460" y2="335" stroke="#ffffff" stroke-width="2"/>
+    <text x="310" y="355" class="cls-attr">+ id: Long</text>
+    <text x="310" y="375" class="cls-attr">+ appointmentDate: Date</text>
+    
+    <!-- AvailableDate Class -->
+    <rect x="550" y="300" width="160" height="80" rx="10" ry="10" fill="#59a14f" />
+    <text x="630" y="325" class="cls-title" text-anchor="middle">AvailableDate</text>
+    <line x1="550" y1="335" x2="710" y2="335" stroke="#ffffff" stroke-width="2"/>
+    <text x="560" y="355" class="cls-attr">+ id: Long</text>
+    <text x="560" y="375" class="cls-attr">+ availableDate: Date</text>
+    
+    <!-- Vaccine Class -->
+    <rect x="50" y="300" width="160" height="120" rx="10" ry="10" fill="#edc948" />
+    <text x="130" y="325" class="cls-title" text-anchor="middle">Vaccine</text>
+    <line x1="50" y1="335" x2="210" y2="335" stroke="#ffffff" stroke-width="2"/>
+    <text x="60" y="355" class="cls-attr">+ id: Long</text>
+    <text x="60" y="375" class="cls-attr">+ name: String</text>
+    <text x="60" y="395" class="cls-attr">+ code: String</text>
+    <text x="60" y="415" class="cls-attr">+ protectionStartDate: Date</text>
+    
+    <!-- Relationships -->
+    <line x1="210" y1="130" x2="300" y2="130" class="relation" />
+    <text x="220" y="125" class="multiplicity">1</text>
+    <text x="280" y="125" class="multiplicity">0..*</text>
+    
+    <line x1="130" y1="210" x2="130" y2="300" class="relation" />
+    <text x="135" y="230" class="multiplicity">1</text>
+    <text x="135" y="290" class="multiplicity">0..*</text>
+    
+    <line x1="210" y1="180" x2="300" y2="320" class="relation" />
+    <text x="220" y="190" class="multiplicity">1</text>
+    <text x="290" y="310" class="multiplicity">0..*</text>
+    
+    <line x1="460" y1="340" x2="550" y2="140" class="relation" />
+    <text x="470" y="330" class="multiplicity">0..*</text>
+    <text x="540" y="150" class="multiplicity">1</text>
+    
+    <line x1="630" y1="190" x2="630" y2="300" class="relation" />
+    <text x="635" y="210" class="multiplicity">1</text>
+    <text x="635" y="290" class="multiplicity">0..*</text>
+</svg>
