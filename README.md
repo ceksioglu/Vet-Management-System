@@ -121,7 +121,7 @@ GET /api/appointments/doctor/{doctorId}?startDate=2023-01-01&endDate=2023-12-31
 
 Class diagram and entity relationships are as follows:
 
-![veterinary-clinic-database-svg-enhanced](https://github.com/user-attachments/assets/2aabc0b8-f565-4710-b396-3e4f98efbbf2)#
+![veterinary-clinic-database-svg-enhanced](https://github.com/user-attachments/assets/2aabc0b8-f565-4710-b396-3e4f98efbbf2)
 
 ## Contact
 
