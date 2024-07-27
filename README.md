@@ -50,7 +50,7 @@ The project includes the following main packages:
 1. Clone the repo:
 
     ```bash
-    git clone https://github.com/yourusername/vet-management-system.git
+    git clone https://github.com/ceksioglu/vet-management-system.git
     cd vet-management-system
     ```
 
@@ -65,10 +65,13 @@ The project includes the following main packages:
     Find `src/main/resources/application.properties` and configure the database connection.
 
     ```properties
-    spring.datasource.url=jdbc:postgresql://localhost:5432/vet_management_db
-    spring.datasource.username=yourusername
-    spring.datasource.password=yourpassword
+    spring.application.name=Veteriner Yonetim Sistemi
+    spring.datasource.url=jdbc:postgresql://localhost:5432/vetsys
+    spring.datasource.username=""
+    spring.datasource.password=""
     spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    server.port=8081
     ```
 
 4. Start the app:
