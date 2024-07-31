@@ -1,18 +1,3 @@
-# Veteriner Yönetim Sistemi - Patika.dev Bitirme Projesi
-
-## Mesut Hocaya Not:
--Proje 8081 portunda çalışmak için ayarlandı.
-```
-http://localhost:8081/swagger-ui/index.html#/
-```
-Randevular saat ile kaydedilmek yerine sıra ile kaydediliyor (proje geliştirirken bazı sorunlar yaşandı). Bunun mantığı bir doktor bir günde bizim belirlediğimiz randevu sayısı kadar çalışabilir (Genel olarak 10 randevu, bu değer değiştirilebilir). Her randevu bir saat kabul ediliyor. Bu randevular daha sonra sıraya sokuldu ve böylece randevu defteri düzene sokuldu. Bu değerleri API'den çekerek görebilirsiniz.
-
-Tarih formatı: 2023-07-15 (YIL / AY / GÜN) şeklindedir.
-
-Projeye daha sonra front end entegrasyonu yapacağım, ama bitmediği için bakmanızın bir anlamı yok.
-
-Bu not kendini proje değerlendirildikten sonra kendini imha edecektir, saygılarımla.
-
 # Veterinary Management System
 
 This project is a comprehensive API designed to manage the daily operations of a veterinary clinic. It manages essential entities such as pet owners, animals, veterinarians, appointments, vaccines, and available dates.
